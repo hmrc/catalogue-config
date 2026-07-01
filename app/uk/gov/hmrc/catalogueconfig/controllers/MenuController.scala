@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.config
+package uk.gov.hmrc.catalogueconfig.controllers
+
+import play.api.Configuration
+import play.api.libs.json.Json
+import play.api.mvc.*
+import uk.gov.hmrc.catalogueconfig.menu.NavMenuService
+import uk.gov.hmrc.catalogueconfig.model.BannerMenu
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 @Singleton
-class AppConfig @Inject()(config: Configuration):
+class MenuController @Inject()(
+    val controllerComponents: ControllerComponents,
+    menuService: NavMenuService,
+    configuration: Configuration
+) extends BaseController {
 
-  val appName: String = config.get[String]("appName")
+  
+
+  def menu(): Action[AnyContent] = Action {
+    Ok(Json.toJson(menuService.buildMenu()))
+  }
+  
+}
