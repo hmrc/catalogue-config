@@ -31,16 +31,14 @@ class SearchService {
         name = "Users",
         href = "/users",
         weight = 1.0f,
-        hints = Set("user management", "account management"),
-        openInNewWindow = false
+        hints = Set("user management", "account management")
       ),
       SearchTerm(
         linkType = "service",
         name = "Teams",
         href = "/teams",
         weight = 1.0f,
-        hints = Set("team management", "group management"),
-        openInNewWindow = false
+        hints = Set("team management", "group management")
       ),
       SearchTerm(
         linkType = "user",

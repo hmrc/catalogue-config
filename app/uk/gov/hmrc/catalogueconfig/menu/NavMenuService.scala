@@ -16,29 +16,11 @@
 
 package uk.gov.hmrc.catalogueconfig.menu
 
-import uk.gov.hmrc.catalogueconfig.menu.NavMenuService.Service
 import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, MenuDropdown, MenuLink}
 
 import javax.inject.{Inject, Singleton}
 
-object NavMenuService {
-
-
-  case class Service(name: String, id: String, description: String)
-  
-  val availableServices = List(
-    Service("Users", "users", "View and manage users"),
-    Service("Teams", "teams", "View and manage teams"),
-    Service("Repositories", "repositories", "View and manage repositories"),
-    Service("Deployments", "deployments", "View and manage deployments"),
-    Service("Shuttering", "shuttering", "View and manage shuttering"),
-    Service("Health", "health", "View and manage health"),
-    Service("Explore", "explore", "Explore services"),
-    Service("Docs", "docs", "View documentation")
-  )
-  
-}
-
+object NavMenuService
 @Singleton
 class NavMenuService @Inject(
   configuration: play.api.Configuration
@@ -46,10 +28,6 @@ class NavMenuService @Inject(
   
   private def buildRelativeUrl(path: String): String = {
     s"/${path.stripPrefix("/")}"
-  }
-
-  private def buildRelativeUrl(service: Service): String = { // TODO: add dev mode ?
-    s"/${service.id}"
   }
 
   def buildMenu(): BannerMenu = {
