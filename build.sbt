@@ -13,6 +13,7 @@ lazy val microservice = Project("catalogue-config", file("."))
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
   )
+  .settings(PlayKeys.playDefaultPort := 9067)
   .settings(CodeCoverageSettings.settings: _*)
 
 lazy val it = project

@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.config
+package uk.gov.hmrc.catalogueconfig.model
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import play.api.libs.json.{Format, Json}
 
-@Singleton
-class AppConfig @Inject()(config: Configuration):
+final case class SearchTerm(
+  linkType        :String,
+  name            :String,
+  href            :String,
+  weight          :Float = 0.5f,
+  hints           :Set[String] = Set.empty,
+  openInNewWindow :Boolean = false
+)
 
-  val appName: String = config.get[String]("appName")
+object SearchTerm {
+  implicit val Format: Format[SearchTerm] = Json.format
+}

@@ -1,3 +1,5 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.catalogueconfig.controllers.MicroserviceHelloWorldController.hello
+GET        /menu-bar/menu           uk.gov.hmrc.catalogueconfig.controllers.MenuController.menu()
+
+GET        /menu-bar/search-index   uk.gov.hmrc.catalogueconfig.controllers.MenuController.search()
