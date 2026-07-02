@@ -26,17 +26,17 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class MenuController @Inject()(
-    val controllerComponents: ControllerComponents,
-    menuService: NavMenuService,
-    searchService: SearchService,
-    configuration: Configuration
+    val controllerComponents : ControllerComponents,
+    menuService              : NavMenuService,
+    searchService            : SearchService,
+    configuration            : Configuration
 ) extends BaseController:
-  
+
   def menu(): Action[AnyContent] = Action:
     Ok(Json.toJson(menuService.buildMenu()))
-  
-  
+
+
   def search(): Action[AnyContent] = Action:
     Ok(Json.toJson(searchService.searchIndex))
-  
+
 

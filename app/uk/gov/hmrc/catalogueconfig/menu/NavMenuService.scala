@@ -34,7 +34,7 @@ class NavMenuService @Inject(
     BannerMenu(
       brand =
         MenuLink(
-          id = "mdtp",
+          id   = "mdtp",
           text = "MDTP",
           href = buildRelativeUrl("/")
           ),
@@ -44,19 +44,12 @@ class NavMenuService @Inject(
           MenuLink("users", "Users", buildRelativeUrl("/users")),
           MenuLink("teams", "Teams", buildRelativeUrl("/teams")),
           MenuLink("repositories", "Repositories", buildRelativeUrl("/repositories"))
-
-          , MenuLink(
-            id = "new-item",
-            text = "NEW ITEM",
-            href = buildRelativeUrl("/new-item")
-            )
-          ),
-
+        ),
       dropdowns =
         Seq(
           MenuDropdown(
-            id = "deployments",
-            text = "Deployments",
+            id    = "deployments",
+            text  = "Deployments",
             items = Seq(
               MenuLink("deploy-service", "Deploy Service", buildRelativeUrl("/deploy-service")),
               MenuLink("deployment-events", "Events", buildRelativeUrl("/deployment-events")),
@@ -66,8 +59,8 @@ class NavMenuService @Inject(
             ),
 
           MenuDropdown(
-            id = "shuttering",
-            text = "Shuttering",
+            id    = "shuttering",
+            text  = "Shuttering",
             items = Seq(
               MenuLink("shutter-overview-frontend", "Shutter Overview - Frontend", buildRelativeUrl("/shutter-overview/frontend")),
               MenuLink("shutter-overview-api", "Shutter Overview - Api", buildRelativeUrl("/shutter-overview/api")),
@@ -77,8 +70,8 @@ class NavMenuService @Inject(
             ),
 
           MenuDropdown(
-            id = "health",
-            text = "Health",
+            id    = "health",
+            text  = "Health",
             items = Seq(
               MenuLink("platform-initiatives", "Platform Initiatives", buildRelativeUrl("/platform-initiatives")),
 
@@ -101,8 +94,8 @@ class NavMenuService @Inject(
             ),
 
           MenuDropdown(
-            id = "explore",
-            text = "Explore",
+            id    = "explore",
+            text  = "Explore",
             items = Seq(
               MenuLink("dependency-explorer", "Dependency Explorer", buildRelativeUrl("/dependency-explorer")),
               MenuLink("jdk-explorer", "JDK Explorer", buildRelativeUrl("/jdk-explorer")),
@@ -119,19 +112,19 @@ class NavMenuService @Inject(
             ),
 
           MenuDropdown(
-            id = "docs",
-            text = "Docs",
+            id    = "docs",
+            text  = "Docs",
             items = Seq(
               MenuLink(
-                id = "mdtp-handbook",
-                text = "MDTP Handbook",
-                href = "https://docs.tax.service.gov.uk/mdtp-handbook/",
+                id       = "mdtp-handbook",
+                text     = "MDTP Handbook",
+                href     = "https://docs.tax.service.gov.uk/mdtp-handbook/",
                 external = true
                 ),
               MenuLink(
-                id = "blog-posts",
-                text = "Blog Posts",
-                href = "https://confluence.tools.tax.service.gov.uk/display/MDTPK/Blog+Posts",
+                id       = "blog-posts",
+                text     = "Blog Posts",
+                href     = "https://confluence.tools.tax.service.gov.uk/display/MDTPK/Blog+Posts",
                 external = true
                 )
               )
