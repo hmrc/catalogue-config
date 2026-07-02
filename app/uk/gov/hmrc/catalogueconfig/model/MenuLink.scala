@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.catalogueconfig.model
 
-import play.api.libs.json.{Format, Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
 final case class MenuLink(
     id       :String,
@@ -26,25 +26,58 @@ final case class MenuLink(
 )
 
 object MenuLink:
-  implicit val format: Format[MenuLink] = Json.format
+  given format: Format[MenuLink] = Json.format
+
+
+sealed trait NavTarget {
+  def name: String
+
+  def id: String
+
+  def description: String
+
+  def href: Option[String]
+}
+
+case class TopMenu(name: String, id: String, description: String, href: Option[String])
+  extends NavTarget
+
+object TopMenu:
+  given format: Format[TopMenu] = Json.format[TopMenu]
+  def apply(name: String, id: String, description: String, href: String): TopMenu =
+    TopMenu(name, id, description, Some(href))
+
+  def apply(name: String, id: String, description: String): TopMenu =
+    TopMenu(name, id, description, None)
+
+case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
+
+object Page:
+  given format: Format[Page] = Json.format[Page]
+  def apply(name: String, id: String, description: String, href: String): Page =
+    Page(name, id, description, Some(href))
+
+  def apply(name: String, id: String, description: String): Page =
+    Page(name, id, description, None)
 
 final case class MenuDropdown(
     id     :String,
     text   :String,
+    href   :Option[String],
     items  :Seq[MenuLink]
 )
 
 object MenuDropdown {
-  implicit val format: OFormat[MenuDropdown] =
+  given format: Format[MenuDropdown] =
     Json.format[MenuDropdown]
 }
 
 final case class BannerMenu(
-    brand         :MenuLink,
-    topLevelLinks :Seq[MenuLink],
+    brand         :TopMenu,
+    topLevelLinks :Seq[TopMenu],
     dropdowns     :Seq[MenuDropdown]
 )
 
 object BannerMenu:
-  implicit val format: OFormat[BannerMenu] =
+  given format: Format[BannerMenu] =
     Json.format[BannerMenu]
