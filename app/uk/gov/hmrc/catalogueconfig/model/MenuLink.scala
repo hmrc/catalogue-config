@@ -19,19 +19,19 @@ package uk.gov.hmrc.catalogueconfig.model
 import play.api.libs.json.{Format, Json, OFormat}
 
 final case class MenuLink(
-    id:       String,
-    text:     String,
-    href:     String,
-    external: Boolean = false
+    id       :String,
+    text     :String,
+    href     :String,
+    external :Boolean = false
 )
 
 object MenuLink:
   implicit val format: Format[MenuLink] = Json.format
 
 final case class MenuDropdown(
-    id:    String,
-    text:  String,
-    items: Seq[MenuLink]
+    id     :String,
+    text   :String,
+    items  :Seq[MenuLink]
 )
 
 object MenuDropdown {
@@ -40,9 +40,9 @@ object MenuDropdown {
 }
 
 final case class BannerMenu(
-    brand:         MenuLink,
-    topLevelLinks: Seq[MenuLink],
-    dropdowns:     Seq[MenuDropdown]
+    brand         :MenuLink,
+    topLevelLinks :Seq[MenuLink],
+    dropdowns     :Seq[MenuDropdown]
 )
 
 object BannerMenu:

@@ -19,12 +19,12 @@ package uk.gov.hmrc.catalogueconfig.model
 import play.api.libs.json.{Format, Json}
 
 final case class SearchTerm(
-  linkType:        String,
-  name:            String,
-  href:            String,
-  weight:          Float = 0.5f,
-  hints:           Set[String] = Set.empty,
-  openInNewWindow: Boolean = false
+  linkType        :String,
+  name            :String,
+  href            :String,
+  weight          :Float = 0.5f,
+  hints           :Set[String] = Set.empty,
+  openInNewWindow :Boolean = false
 )
 
 object SearchTerm {
