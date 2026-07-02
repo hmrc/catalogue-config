@@ -96,7 +96,7 @@ class NavMenuService @Inject(
 
               MenuLink("health-metrics-timeline", "Health Metrics - Timeline", buildRelativeUrl("/health-metrics/timeline")),
 
-              MenuLink("operational-metrics", "Operational Metrics", buildRelativeUrl("/health-metrics")) // TODO: need a 'hack' to make this work locally where we need to run in differnt apps
+              MenuLink("operational-metrics", "Operational Metrics", buildRelativeUrl("/health-metrics"))
               )
             ),
 
