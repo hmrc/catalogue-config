@@ -24,13 +24,13 @@ object NavMenuService
 @Singleton
 class NavMenuService @Inject(
   configuration: play.api.Configuration
-){
+):
   
-  private def buildRelativeUrl(path: String): String = {
+  private def buildRelativeUrl(path: String): String =
     s"/${path.stripPrefix("/")}"
-  }
 
-  def buildMenu(): BannerMenu = {
+
+  def buildMenu(): BannerMenu =
     BannerMenu(
       brand =
         MenuLink(
@@ -139,6 +139,3 @@ class NavMenuService @Inject(
 
           )
       )
-  }
-
-}

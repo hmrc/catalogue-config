@@ -21,9 +21,9 @@ import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import javax.inject.Singleton
 
 @Singleton
-class SearchService {
+class SearchService:
 
-  def searchIndex: List[SearchTerm] = {
+  def searchIndex: List[SearchTerm] =
     // example search index
     List(
       SearchTerm(
@@ -32,63 +32,60 @@ class SearchService {
         href = "/users",
         weight = 1.0f,
         hints = Set("user management", "account management")
-      ),
+        ),
       SearchTerm(
         linkType = "service",
         name = "Teams",
         href = "/teams",
         weight = 1.0f,
         hints = Set("team management", "group management")
-      ),
+        ),
       SearchTerm(
         linkType = "user",
         name = "John Doe",
         href = "/users/john-doe",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "user",
         name = "Bob",
         href = "/users/bob",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "leak",
         name = "placeholder-leak",
         href = "/leak-detection/repositories/some-repo-with-leak",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "deploy",
         name = "repo-deploy-placeholder",
         href = "/deploy-service?serviceName=repo-for-deploy",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "config",
         name = "placeholder-config",
         href = "/service/some-placeholder-repo/config",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "timeline",
         name = "placeholder-for-timeline",
         href = "/deployment-timeline?repo-for-timeline",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "commissioning state",
         name = "placeholder-commissioning-state",
         href = "/service/placeholder-repo/commissioning-state",
         weight = 1.0f
-      ),
+        ),
       SearchTerm(
         linkType = "recommendations",
         name = "placeholder-repo-for-recommendations",
         href = "/pr-commenter/recommendations?name=placeholder-repo",
         weight = 1.0f
+        )
       )
-      )
-
-  }
-}

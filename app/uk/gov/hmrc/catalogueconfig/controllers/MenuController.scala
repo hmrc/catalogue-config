@@ -30,16 +30,13 @@ class MenuController @Inject()(
     menuService: NavMenuService,
     searchService: SearchService,
     configuration: Configuration
-) extends BaseController {
-
+) extends BaseController:
   
-
-  def menu(): Action[AnyContent] = Action {
+  def menu(): Action[AnyContent] = Action:
     Ok(Json.toJson(menuService.buildMenu()))
-  }
   
-  def search(): Action[AnyContent] = Action {
+  
+  def search(): Action[AnyContent] = Action:
     Ok(Json.toJson(searchService.searchIndex))
-  }
   
-}
+
