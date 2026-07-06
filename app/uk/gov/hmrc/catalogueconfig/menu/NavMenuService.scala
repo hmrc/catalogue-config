@@ -22,12 +22,6 @@ import javax.inject.Singleton
 
 object NavMenuService {
 
-  def defaultHref(id: String): String =
-    Option(id)
-      .map(_.trim)
-      .filter(_.nonEmpty)
-      .fold("/")(value => s"/$value")
-
   val users: TopMenu        = TopMenu("Users", "users", "View and manage users", defaultHref("users"))
   val teams: TopMenu        = TopMenu("Teams", "teams", "View and manage teams", defaultHref("teams"))
   val repositories: TopMenu = TopMenu("Repositories", "repositories", "View and manage repositories", defaultHref("repositories"))
@@ -93,6 +87,11 @@ object NavMenuService {
   val costExplorer: Page               = Page("Cost Explorer", "cost-explorer", "Explore service costs", "/cost-explorer")
   val serviceProvision: Page           = Page("Service Provision", "service-provision", "View service provisioning status and details", "/service-provision")
 
+  private def defaultHref(id: String): String =
+    Option(id)
+      .map(_.trim)
+      .filter(_.nonEmpty)
+      .fold("/")(value => s"/$value")
 }
 
 @Singleton
@@ -100,7 +99,7 @@ class NavMenuService {
   
   import NavMenuService._
 
-  private def buildRelativeUrl(target: NavTarget): String = { // TODO: add dev mode ?
+  private def buildRelativeUrl(target: NavTarget): String =
     target.href.map(_.trim)
                .map(href =>
                  if (href.isBlank) "/"
@@ -108,9 +107,8 @@ class NavMenuService {
                  else s"/${href.stripPrefix("/")}"
                )
                .getOrElse("#")
-  }
 
-  def buildMenu(): BannerMenu = {
+  def buildMenu(): BannerMenu =
     BannerMenu(
       brand =
         TopMenu(
@@ -224,6 +222,5 @@ class NavMenuService {
 
           )
       )
-  }
 
 }
