@@ -43,6 +43,11 @@ object NavMenuService {
     docs
   )
 
+  /**
+   * We have a scenario where whether a top-level item has a dropdown is determined by user permissions.
+   */
+
+
   // pages
   val createUser: Page                 = Page("Create a User", "create-user", "Create a user", "/create-user")
   val createServiceUser: Page          = Page("Create a Service User", "create-service-user", "Create a service user", "/create-service-user")

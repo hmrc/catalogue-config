@@ -39,8 +39,12 @@ sealed trait NavTarget {
   def href: Option[String]
 }
 
-case class TopMenu(name: String, id: String, description: String, href: Option[String])
-  extends NavTarget
+final case class TopMenu(
+  name: String,
+  id: String,
+  description: String,
+  href: Option[String]
+) extends NavTarget
 
 object TopMenu:
   given format: Format[TopMenu] = Json.format[TopMenu]
@@ -50,7 +54,7 @@ object TopMenu:
   def apply(name: String, id: String, description: String): TopMenu =
     TopMenu(name, id, description, None)
 
-case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
+final case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
 
 object Page:
   given format: Format[Page] = Json.format[Page]
@@ -61,10 +65,11 @@ object Page:
     Page(name, id, description, None)
 
 final case class MenuDropdown(
-    id     :String,
-    text   :String,
-    href   :Option[String],
-    items  :Seq[MenuLink]
+  id     :String,
+  text   :String,
+  href   :Option[String],
+  items  :Seq[MenuLink],
+  dropDownRole: Seq[Role] = Nil
 )
 
 object MenuDropdown {
