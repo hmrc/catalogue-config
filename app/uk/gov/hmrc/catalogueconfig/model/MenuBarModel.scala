@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.catalogueconfig.model
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Format, Json, JsonConfiguration, JsonNaming}
 
-sealed trait NavTarget {
+sealed trait MenuLink {
   def name: String
 
   def id: String
 
-  def description: String
-
   def href: Option[String]
+
+  def external: Boolean
 }
+
+object MenuLink:
+  given JsonConfiguration = JsonConfiguration(
+    typeNaming = JsonNaming(_.split("\\.").last)
+  )
+  given format: Format[MenuLink] = Json.format[MenuLink]
 
 final case class BannerMenu(
   brand         : MenuLink,
@@ -51,26 +57,13 @@ object MenuDropdown {
     Json.format[MenuDropdown]
 }
 
-final case class MenuLink(
-    id       :String,
-    name     :String,
-    href     :String,
-    external :Boolean = false
-)
-
-object MenuLink:
-  given format: Format[MenuLink] = Json.format
-
-
 final case class TopMenu(
   name: String,
   id: String,
   description: String,
   href: Option[String],
   external: Boolean = false
-) extends NavTarget:
-  def toMenuLink: MenuLink =
-    MenuLink(id, name, href.getOrElse("#"), external)
+) extends MenuLink
 
 object TopMenu:
   given format: Format[TopMenu] = Json.format[TopMenu]
@@ -80,14 +73,20 @@ object TopMenu:
   def apply(name: String, id: String, description: String): TopMenu =
     TopMenu(name, id, description, None)
 
-final case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
+final case class Page(
+  name: String,
+  id: String,
+  description: Option[String] = None,
+  href: Option[String],
+  external: Boolean = false) extends MenuLink
 
 object Page:
   given format: Format[Page] = Json.format[Page]
+
   def apply(name: String, id: String, description: String, href: String): Page =
-    Page(name, id, description, Some(href))
+    Page(name, id, Some(description), Some(href))
 
   def apply(name: String, id: String, description: String): Page =
-    Page(name, id, description, None)
+    Page(name, id, Some(description), None)
 
 

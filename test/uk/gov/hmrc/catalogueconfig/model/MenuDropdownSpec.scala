@@ -28,7 +28,7 @@ class MenuDropdownSpec extends AnyWordSpec with Matchers:
       name = "Users",
       href = Some("/users"),
       items = Seq(
-        MenuLink(id = "create-user", name = "Create User", href = "/create-user")
+        Page(id = "create-user", name = "Create User", description = None, href = Some("/create-user"))
         ),
       dropDownRole = Seq(Role.CanCreate, Role.CanManageUsers)
       )
@@ -43,10 +43,11 @@ class MenuDropdownSpec extends AnyWordSpec with Matchers:
             |  "name" : "Users",
             |  "href" : "/users",
             |  "items" : [ {
-            |    "id" : "create-user",
             |    "name" : "Create User",
+            |    "id" : "create-user",
             |    "href" : "/create-user",
-            |    "external" : false
+            |    "external" : false,
+            |    "_type" : "Page"
             |  } ],
             |  "dropDownRole" : [ "CAN_CREATE_USERS", "CAN_MANAGE_USERS" ]
             |}""".stripMargin

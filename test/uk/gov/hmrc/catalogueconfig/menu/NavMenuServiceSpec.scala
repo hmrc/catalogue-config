@@ -33,7 +33,7 @@ class NavMenuServiceSpec
 
       menu.brand.name shouldBe "MDTP"
       menu.brand.id shouldBe "mdtp"
-      menu.brand.href shouldBe "/"
+      menu.brand.href should contain ("/")
     }
 
     "include all 8 top-level menu items" in {

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.catalogueconfig.menu
 
-import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, MenuDropdown, MenuLink, NavTarget, Page, TopMenu}
+import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, MenuDropdown, MenuLink, Page, TopMenu}
 
 import javax.inject.Singleton
 
@@ -104,7 +104,7 @@ class NavMenuService {
   
   import NavMenuService._
 
-  private def buildRelativeUrl(target: NavTarget): String =
+  private def buildRelativeUrl(target: MenuLink): String =
     target.href.map(_.trim)
                .map(href =>
                  if (href.isBlank) "/"
@@ -116,13 +116,14 @@ class NavMenuService {
   def buildMenu(): BannerMenu =
     BannerMenu(
       brand =
-        MenuLink(
+        TopMenu(
           name = "MDTP",
           id = "mdtp",
-          href = "/"
+          description = "MDTP Home",
+          href = Some("/")
         ),
 
-      topLevelLinks = NavMenuService.topLevelMenus.map(_.toMenuLink),
+      topLevelLinks = NavMenuService.topLevelMenus,
 
       dropdowns =
         Seq(
@@ -131,9 +132,9 @@ class NavMenuService {
             name = NavMenuService.users.name,
             href = Some(buildRelativeUrl(users)),
             items = Seq(
-              MenuLink(NavMenuService.createUser.id, NavMenuService.createUser.name, buildRelativeUrl(NavMenuService.createUser)),
-              MenuLink(NavMenuService.createServiceUser.id, NavMenuService.createServiceUser.name, buildRelativeUrl(NavMenuService.createServiceUser)),
-              MenuLink(NavMenuService.offboardUsers.id, NavMenuService.offboardUsers.name, buildRelativeUrl(NavMenuService.offboardUsers))
+              createUser,
+              createServiceUser,
+              offboardUsers
               )
             ),
 
@@ -142,10 +143,10 @@ class NavMenuService {
             name = NavMenuService.deployments.name,
             href = None,
             items = Seq(
-              MenuLink(NavMenuService.deployService.id, NavMenuService.deployService.name, buildRelativeUrl(NavMenuService.deployService)),
-              MenuLink(NavMenuService.deploymentEvents.id, NavMenuService.deploymentEvents.name, buildRelativeUrl(NavMenuService.deploymentEvents)),
-              MenuLink(NavMenuService.deploymentTimeline.id, NavMenuService.deploymentTimeline.name, buildRelativeUrl(NavMenuService.deploymentTimeline)),
-              MenuLink(NavMenuService.whatsRunningWhere.id, NavMenuService.whatsRunningWhere.name, buildRelativeUrl(NavMenuService.whatsRunningWhere))
+              deployService,
+              deploymentEvents,
+              deploymentTimeline,
+              whatsRunningWhere
               )
             ),
 
@@ -154,10 +155,10 @@ class NavMenuService {
             name = NavMenuService.shuttering.name,
             href = None,
             items = Seq(
-              MenuLink(NavMenuService.shutterOverviewFrontend.id, NavMenuService.shutterOverviewFrontend.name, buildRelativeUrl(NavMenuService.shutterOverviewFrontend)),
-              MenuLink(NavMenuService.shutterOverviewApi.id, NavMenuService.shutterOverviewApi.name, buildRelativeUrl(NavMenuService.shutterOverviewApi)),
-              MenuLink(NavMenuService.shutterOverviewRate.id, NavMenuService.shutterOverviewRate.name, buildRelativeUrl(NavMenuService.shutterOverviewRate)),
-              MenuLink(NavMenuService.shutterEvents.id, NavMenuService.shutterEvents.name, buildRelativeUrl(NavMenuService.shutterEvents))
+              shutterOverviewFrontend,
+              shutterOverviewApi,
+              shutterOverviewRate,
+              shutterEvents
               )
             ),
 
@@ -166,22 +167,22 @@ class NavMenuService {
             name = NavMenuService.health.name,
             href = None,
             items = Seq(
-              MenuLink(NavMenuService.platformInitiatives.id, NavMenuService.platformInitiatives.name, buildRelativeUrl(NavMenuService.platformInitiatives)),
+              platformInitiatives,
 
-              MenuLink(NavMenuService.bobbyRules.id, NavMenuService.bobbyRules.name, buildRelativeUrl(NavMenuService.bobbyRules)),
-              MenuLink(NavMenuService.bobbyViolations.id, NavMenuService.bobbyViolations.name, buildRelativeUrl(NavMenuService.bobbyViolations)),
+              bobbyRules,
+              bobbyViolations,
 
-              MenuLink(NavMenuService.leakDetectionRules.id, NavMenuService.leakDetectionRules.name, buildRelativeUrl(NavMenuService.leakDetectionRules)),
-              MenuLink(NavMenuService.leakDetectionRepositories.id, NavMenuService.leakDetectionRepositories.name, buildRelativeUrl(NavMenuService.leakDetectionRepositories)),
+              leakDetectionRules,
+              leakDetectionRepositories,
 
-              MenuLink(NavMenuService.vulnerabilities.id, NavMenuService.vulnerabilities.name, buildRelativeUrl(NavMenuService.vulnerabilities)),
-              MenuLink(NavMenuService.vulnerabilitiesServices.id, NavMenuService.vulnerabilitiesServices.name, buildRelativeUrl(NavMenuService.vulnerabilitiesServices)),
-              MenuLink(NavMenuService.vulnerabilitiesTimeline.id, NavMenuService.vulnerabilitiesTimeline.name, buildRelativeUrl(NavMenuService.vulnerabilitiesTimeline)),
+              vulnerabilities,
+              vulnerabilitiesServices,
+              vulnerabilitiesTimeline,
 
-              MenuLink(NavMenuService.prCommenterRecommendations.id, NavMenuService.prCommenterRecommendations.name, buildRelativeUrl(NavMenuService.prCommenterRecommendations)),
+              prCommenterRecommendations,
 
-              MenuLink(NavMenuService.healthMetricsTimeline.id, NavMenuService.healthMetricsTimeline.name, buildRelativeUrl(NavMenuService.healthMetricsTimeline)),
-              MenuLink(NavMenuService.operationalMetrics.id, NavMenuService.operationalMetrics.name, buildRelativeUrl(NavMenuService.operationalMetrics)), // href not confirmed from rendered HTML; retained existing target
+              healthMetricsTimeline,
+              operationalMetrics, // href not confirmed from rendered HTML; retained existing target
               )
             ),
 
@@ -190,17 +191,17 @@ class NavMenuService {
             name = NavMenuService.explore.name,
             href = None,
             items = Seq(
-              MenuLink(NavMenuService.dependencyExplorer.id, NavMenuService.dependencyExplorer.name, buildRelativeUrl(NavMenuService.dependencyExplorer)),
-              MenuLink(NavMenuService.jdkExplorer.id, NavMenuService.jdkExplorer.name, buildRelativeUrl(NavMenuService.jdkExplorer)),
-              MenuLink(NavMenuService.sbtExplorer.id, NavMenuService.sbtExplorer.name, buildRelativeUrl(NavMenuService.sbtExplorer)),
-              MenuLink(NavMenuService.searchByUrl.id, NavMenuService.searchByUrl.name, buildRelativeUrl(NavMenuService.searchByUrl)),
-              MenuLink(NavMenuService.searchConfig.id, NavMenuService.searchConfig.name, buildRelativeUrl(NavMenuService.searchConfig)),
-              MenuLink(NavMenuService.searchCommissioningState.id, NavMenuService.searchCommissioningState.name, buildRelativeUrl(NavMenuService.searchCommissioningState)),
-              MenuLink(NavMenuService.serviceMetrics.id, NavMenuService.serviceMetrics.name, buildRelativeUrl(NavMenuService.serviceMetrics)),
-              MenuLink(NavMenuService.testResults.id, NavMenuService.testResults.name, buildRelativeUrl(NavMenuService.testResults)),
-              MenuLink(NavMenuService.configWarnings.id, NavMenuService.configWarnings.name, buildRelativeUrl(NavMenuService.configWarnings)),
-              MenuLink(NavMenuService.costExplorer.id, NavMenuService.costExplorer.name, buildRelativeUrl(NavMenuService.costExplorer)),
-              MenuLink(NavMenuService.serviceProvision.id, NavMenuService.serviceProvision.name, buildRelativeUrl(NavMenuService.serviceProvision))
+              Page(NavMenuService.dependencyExplorer.id, NavMenuService.dependencyExplorer.name, buildRelativeUrl(NavMenuService.dependencyExplorer)),
+              Page(NavMenuService.jdkExplorer.id, NavMenuService.jdkExplorer.name, buildRelativeUrl(NavMenuService.jdkExplorer)),
+              Page(NavMenuService.sbtExplorer.id, NavMenuService.sbtExplorer.name, buildRelativeUrl(NavMenuService.sbtExplorer)),
+              Page(NavMenuService.searchByUrl.id, NavMenuService.searchByUrl.name, buildRelativeUrl(NavMenuService.searchByUrl)),
+              Page(NavMenuService.searchConfig.id, NavMenuService.searchConfig.name, buildRelativeUrl(NavMenuService.searchConfig)),
+              Page(NavMenuService.searchCommissioningState.id, NavMenuService.searchCommissioningState.name, buildRelativeUrl(NavMenuService.searchCommissioningState)),
+              Page(NavMenuService.serviceMetrics.id, NavMenuService.serviceMetrics.name, buildRelativeUrl(NavMenuService.serviceMetrics)),
+              Page(NavMenuService.testResults.id, NavMenuService.testResults.name, buildRelativeUrl(NavMenuService.testResults)),
+              Page(NavMenuService.configWarnings.id, NavMenuService.configWarnings.name, buildRelativeUrl(NavMenuService.configWarnings)),
+              Page(NavMenuService.costExplorer.id, NavMenuService.costExplorer.name, buildRelativeUrl(NavMenuService.costExplorer)),
+              Page(NavMenuService.serviceProvision.id, NavMenuService.serviceProvision.name, buildRelativeUrl(NavMenuService.serviceProvision))
               )
             ),
 
@@ -209,16 +210,16 @@ class NavMenuService {
             name = NavMenuService.docs.name,
             href = None,
             items = Seq(
-              MenuLink(
-                id = "mdtp-handbook",
+              Page(
                 name = "MDTP Handbook",
-                href = "https://docs.tax.service.gov.uk/mdtp-handbook/",
+                id = "mdtp-handbook",
+                href = Some("https://docs.tax.service.gov.uk/mdtp-handbook/"),
                 external = true
                 ),
-              MenuLink(
+              Page(
                 id = "blog-posts",
                 name = "Blog Posts",
-                href = "https://confluence.tools.tax.service.gov.uk/dosearchsite.action?cql=(label=catalogue and type=blogpost) order by created desc",
+                href = Some("https://confluence.tools.tax.service.gov.uk/dosearchsite.action?cql=(label=catalogue and type=blogpost) order by created desc"),
                 external = true
                 )
               )
