@@ -25,10 +25,10 @@ class MenuDropdownSpec extends AnyWordSpec with Matchers:
   "MenuDropdown JSON format" when {
     val dropdown = MenuDropdown(
       id = "users",
-      text = "Users",
+      name = "Users",
       href = Some("/users"),
       items = Seq(
-        MenuLink(id = "create-user", text = "Create User", href = "/create-user")
+        MenuLink(id = "create-user", name = "Create User", href = "/create-user")
         ),
       dropDownRole = Seq(Role.CanCreate, Role.CanManageUsers)
       )
@@ -40,11 +40,11 @@ class MenuDropdownSpec extends AnyWordSpec with Matchers:
           """
             |{
             |  "id" : "users",
-            |  "text" : "Users",
+            |  "name" : "Users",
             |  "href" : "/users",
             |  "items" : [ {
             |    "id" : "create-user",
-            |    "text" : "Create User",
+            |    "name" : "Create User",
             |    "href" : "/create-user",
             |    "external" : false
             |  } ],

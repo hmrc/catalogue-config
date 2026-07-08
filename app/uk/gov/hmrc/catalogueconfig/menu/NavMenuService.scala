@@ -129,7 +129,7 @@ class NavMenuService {
         Seq(
           MenuDropdown(
             id = NavMenuService.users.id,
-            text = NavMenuService.users.name,
+            name = NavMenuService.users.name,
             href = Some(buildRelativeUrl(users)),
             items = Seq(
               MenuLink(NavMenuService.createUser.id, NavMenuService.createUser.name, buildRelativeUrl(NavMenuService.createUser)),
@@ -140,7 +140,7 @@ class NavMenuService {
 
           MenuDropdown(
             id = NavMenuService.deployments.id,
-            text = NavMenuService.deployments.name,
+            name = NavMenuService.deployments.name,
             href = None,
             items = Seq(
               MenuLink(NavMenuService.deployService.id, NavMenuService.deployService.name, buildRelativeUrl(NavMenuService.deployService)),
@@ -152,7 +152,7 @@ class NavMenuService {
 
           MenuDropdown(
             id = NavMenuService.shuttering.id,
-            text = NavMenuService.shuttering.name,
+            name = NavMenuService.shuttering.name,
             href = None,
             items = Seq(
               MenuLink(NavMenuService.shutterOverviewFrontend.id, NavMenuService.shutterOverviewFrontend.name, buildRelativeUrl(NavMenuService.shutterOverviewFrontend)),
@@ -164,7 +164,7 @@ class NavMenuService {
 
           MenuDropdown(
             id = NavMenuService.health.id,
-            text = NavMenuService.health.name,
+            name = NavMenuService.health.name,
             href = None,
             items = Seq(
               MenuLink(NavMenuService.platformInitiatives.id, NavMenuService.platformInitiatives.name, buildRelativeUrl(NavMenuService.platformInitiatives)),
@@ -188,7 +188,7 @@ class NavMenuService {
 
           MenuDropdown(
             id = NavMenuService.explore.id,
-            text = NavMenuService.explore.name,
+            name = NavMenuService.explore.name,
             href = None,
             items = Seq(
               MenuLink(NavMenuService.dependencyExplorer.id, NavMenuService.dependencyExplorer.name, buildRelativeUrl(NavMenuService.dependencyExplorer)),
@@ -207,18 +207,18 @@ class NavMenuService {
 
           MenuDropdown(
             id = NavMenuService.docs.id,
-            text = NavMenuService.docs.name,
+            name = NavMenuService.docs.name,
             href = None,
             items = Seq(
               MenuLink(
                 id = "mdtp-handbook",
-                text = "MDTP Handbook",
+                name = "MDTP Handbook",
                 href = "https://docs.tax.service.gov.uk/mdtp-handbook/",
                 external = true
                 ),
               MenuLink(
                 id = "blog-posts",
-                text = "Blog Posts",
+                name = "Blog Posts",
                 href = "https://confluence.tools.tax.service.gov.uk/dosearchsite.action?cql=(label=catalogue and type=blogpost) order by created desc",
                 external = true
                 )

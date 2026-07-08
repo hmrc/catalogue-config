@@ -18,17 +18,6 @@ package uk.gov.hmrc.catalogueconfig.model
 
 import play.api.libs.json.{Format, Json}
 
-final case class MenuLink(
-    id       :String,
-    text     :String,
-    href     :String,
-    external :Boolean = false
-)
-
-object MenuLink:
-  given format: Format[MenuLink] = Json.format
-
-
 sealed trait NavTarget {
   def name: String
 
@@ -38,6 +27,16 @@ sealed trait NavTarget {
 
   def href: Option[String]
 }
+
+final case class BannerMenu(
+  brand         :TopMenu,
+  topLevelLinks :Seq[TopMenu],
+  dropdowns     :Seq[MenuDropdown]
+)
+
+object BannerMenu:
+  given format: Format[BannerMenu] =
+    Json.format[BannerMenu]
 
 final case class TopMenu(
   name: String,
@@ -54,19 +53,9 @@ object TopMenu:
   def apply(name: String, id: String, description: String): TopMenu =
     TopMenu(name, id, description, None)
 
-final case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
-
-object Page:
-  given format: Format[Page] = Json.format[Page]
-  def apply(name: String, id: String, description: String, href: String): Page =
-    Page(name, id, description, Some(href))
-
-  def apply(name: String, id: String, description: String): Page =
-    Page(name, id, description, None)
-
 final case class MenuDropdown(
   id     :String,
-  text   :String,
+  name   :String,
   href   :Option[String],
   items  :Seq[MenuLink],
   dropDownRole: Seq[Role] = Nil
@@ -77,12 +66,27 @@ object MenuDropdown {
     Json.format[MenuDropdown]
 }
 
-final case class BannerMenu(
-    brand         :TopMenu,
-    topLevelLinks :Seq[TopMenu],
-    dropdowns     :Seq[MenuDropdown]
+final case class MenuLink(
+    id       :String,
+    name     :String,
+    href     :String,
+    external :Boolean = false
 )
 
-object BannerMenu:
-  given format: Format[BannerMenu] =
-    Json.format[BannerMenu]
+object MenuLink:
+  given format: Format[MenuLink] = Json.format
+
+
+
+
+final case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
+
+object Page:
+  given format: Format[Page] = Json.format[Page]
+  def apply(name: String, id: String, description: String, href: String): Page =
+    Page(name, id, description, Some(href))
+
+  def apply(name: String, id: String, description: String): Page =
+    Page(name, id, description, None)
+
+
