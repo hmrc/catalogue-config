@@ -29,29 +29,14 @@ sealed trait NavTarget {
 }
 
 final case class BannerMenu(
-  brand         :TopMenu,
-  topLevelLinks :Seq[TopMenu],
-  dropdowns     :Seq[MenuDropdown]
+  brand         : MenuLink,
+  topLevelLinks : Seq[MenuLink],
+  dropdowns     : Seq[MenuDropdown]
 )
 
 object BannerMenu:
   given format: Format[BannerMenu] =
     Json.format[BannerMenu]
-
-final case class TopMenu(
-  name: String,
-  id: String,
-  description: String,
-  href: Option[String]
-) extends NavTarget
-
-object TopMenu:
-  given format: Format[TopMenu] = Json.format[TopMenu]
-  def apply(name: String, id: String, description: String, href: String): TopMenu =
-    TopMenu(name, id, description, Some(href))
-
-  def apply(name: String, id: String, description: String): TopMenu =
-    TopMenu(name, id, description, None)
 
 final case class MenuDropdown(
   id     :String,
@@ -77,7 +62,23 @@ object MenuLink:
   given format: Format[MenuLink] = Json.format
 
 
+final case class TopMenu(
+  name: String,
+  id: String,
+  description: String,
+  href: Option[String],
+  external: Boolean = false
+) extends NavTarget:
+  def toMenuLink: MenuLink =
+    MenuLink(id, name, href.getOrElse("#"), external)
 
+object TopMenu:
+  given format: Format[TopMenu] = Json.format[TopMenu]
+  def apply(name: String, id: String, description: String, href: String): TopMenu =
+    TopMenu(name, id, description, Some(href))
+
+  def apply(name: String, id: String, description: String): TopMenu =
+    TopMenu(name, id, description, None)
 
 final case class Page(name: String, id: String, description: String, href: Option[String]) extends NavTarget
 

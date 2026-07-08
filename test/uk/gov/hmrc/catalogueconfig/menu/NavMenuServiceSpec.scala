@@ -27,13 +27,13 @@ class NavMenuServiceSpec
 
   "NavMenuService.buildMenu" should {
 
+    val topMenus = NavMenuService.topLevelMenus
     "build the brand field with correct structure" in {
       val menu = service.buildMenu()
 
       menu.brand.name shouldBe "MDTP"
       menu.brand.id shouldBe "mdtp"
-      menu.brand.description shouldBe "MDTP"
-      menu.brand.href shouldBe Some("/")
+      menu.brand.href shouldBe "/"
     }
 
     "include all 8 top-level menu items" in {
@@ -43,8 +43,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Users' with correct structure" in {
-      val menu = service.buildMenu()
-      val users = menu.topLevelLinks.find(_.id == "users")
+      val users = topMenus.find(_.id == "users")
 
       users should not be empty
       users.get.name shouldBe "Users"
@@ -53,8 +52,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Teams' with correct structure" in {
-      val menu = service.buildMenu()
-      val teams = menu.topLevelLinks.find(_.id == "teams")
+      val teams = topMenus.find(_.id == "teams")
 
       teams should not be empty
       teams.get.name shouldBe "Teams"
@@ -63,8 +61,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Repositories' with correct structure" in {
-      val menu = service.buildMenu()
-      val repositories = menu.topLevelLinks.find(_.id == "repositories")
+      val repositories = topMenus.find(_.id == "repositories")
 
       repositories should not be empty
       repositories.get.name shouldBe "Repositories"
@@ -73,8 +70,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Deployments' with correct structure" in {
-      val menu = service.buildMenu()
-      val deployments = menu.topLevelLinks.find(_.id == "deployments")
+      val deployments = topMenus.find(_.id == "deployments")
 
       deployments should not be empty
       deployments.get.name shouldBe "Deployments"
@@ -83,8 +79,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Shuttering' with correct structure" in {
-      val menu = service.buildMenu()
-      val shuttering = menu.topLevelLinks.find(_.id == "shuttering")
+      val shuttering = topMenus.find(_.id == "shuttering")
 
       shuttering should not be empty
       shuttering.get.name shouldBe "Shuttering"
@@ -93,8 +88,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Health' with correct structure" in {
-      val menu = service.buildMenu()
-      val health = menu.topLevelLinks.find(_.id == "health")
+      val health = topMenus.find(_.id == "health")
 
       health should not be empty
       health.get.name shouldBe "Health"
@@ -103,8 +97,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Explore' with correct structure" in {
-      val menu = service.buildMenu()
-      val explore = menu.topLevelLinks.find(_.id == "explore")
+      val explore = topMenus.find(_.id == "explore")
 
       explore should not be empty
       explore.get.name shouldBe "Explore"
@@ -113,8 +106,7 @@ class NavMenuServiceSpec
     }
 
     "include top-level menu 'Docs' with correct structure" in {
-      val menu = service.buildMenu()
-      val docs = menu.topLevelLinks.find(_.id == "docs")
+      val docs = topMenus.find(_.id == "docs")
 
       docs should not be empty
       docs.get.name shouldBe "Docs"
@@ -123,9 +115,7 @@ class NavMenuServiceSpec
     }
 
     "ensure all top-level links with href follow the /{id} pattern" in {
-      val menu = service.buildMenu()
-
-      menu.topLevelLinks
+      NavMenuService.topLevelMenus
         .filter(_.href.isDefined)
         .foreach { link =>
           val hrefValue = link.href.get

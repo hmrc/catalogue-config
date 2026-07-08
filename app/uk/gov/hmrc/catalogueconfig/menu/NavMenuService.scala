@@ -32,7 +32,7 @@ object NavMenuService {
   val explore: TopMenu      = TopMenu("Explore", "explore", "Explore services")
   val docs: TopMenu         = TopMenu("Docs", "docs", "View documentation")
 
-  val availableTopMenus: List[TopMenu] = List(
+  val topLevelMenus: List[TopMenu] = List(
     users,
     teams,
     repositories,
@@ -116,14 +116,13 @@ class NavMenuService {
   def buildMenu(): BannerMenu =
     BannerMenu(
       brand =
-        TopMenu(
+        MenuLink(
           name = "MDTP",
           id = "mdtp",
-          description = "MDTP",
-          href = Some("/")
+          href = "/"
         ),
 
-      topLevelLinks = NavMenuService.availableTopMenus,
+      topLevelLinks = NavMenuService.topLevelMenus.map(_.toMenuLink),
 
       dropdowns =
         Seq(
