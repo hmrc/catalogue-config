@@ -47,7 +47,6 @@ class NavMenuServiceSpec
 
       users should not be empty
       users.get.name shouldBe "Users"
-      users.get.description shouldBe "View and manage users"
       users.get.href shouldBe Some("/users")
     }
 
@@ -56,7 +55,6 @@ class NavMenuServiceSpec
 
       teams should not be empty
       teams.get.name shouldBe "Teams"
-      teams.get.description shouldBe "View and manage teams"
       teams.get.href shouldBe Some("/teams")
     }
 
@@ -65,7 +63,6 @@ class NavMenuServiceSpec
 
       repositories should not be empty
       repositories.get.name shouldBe "Repositories"
-      repositories.get.description shouldBe "View and manage repositories"
       repositories.get.href shouldBe Some("/repositories")
     }
 
@@ -74,7 +71,6 @@ class NavMenuServiceSpec
 
       deployments should not be empty
       deployments.get.name shouldBe "Deployments"
-      deployments.get.description shouldBe "View and manage deployments"
       deployments.get.href shouldBe None
     }
 
@@ -83,7 +79,6 @@ class NavMenuServiceSpec
 
       shuttering should not be empty
       shuttering.get.name shouldBe "Shuttering"
-      shuttering.get.description shouldBe "View and manage shuttering"
       shuttering.get.href shouldBe None
     }
 
@@ -92,7 +87,6 @@ class NavMenuServiceSpec
 
       health should not be empty
       health.get.name shouldBe "Health"
-      health.get.description shouldBe "View and manage health"
       health.get.href shouldBe None
     }
 
@@ -101,7 +95,6 @@ class NavMenuServiceSpec
 
       explore should not be empty
       explore.get.name shouldBe "Explore"
-      explore.get.description shouldBe "Explore services"
       explore.get.href shouldBe None
     }
 
@@ -110,7 +103,6 @@ class NavMenuServiceSpec
 
       docs should not be empty
       docs.get.name shouldBe "Docs"
-      docs.get.description shouldBe "View documentation"
       docs.get.href shouldBe None
     }
 

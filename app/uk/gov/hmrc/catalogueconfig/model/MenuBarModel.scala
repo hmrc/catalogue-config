@@ -29,27 +29,34 @@ sealed trait MenuLink {
 }
 
 object MenuLink:
-  given JsonConfiguration = JsonConfiguration(
+  given JsonConfiguration        = JsonConfiguration(
     typeNaming = JsonNaming(_.split("\\.").last)
-  )
+    )
   given format: Format[MenuLink] = Json.format[MenuLink]
 
 final case class BannerMenu(
-  brand         : MenuLink,
-  topLevelLinks : Seq[MenuLink],
-  dropdowns     : Seq[MenuDropdown]
+  brand          :MenuLink,
+  topLevelLinks  :Seq[MenuLink],
+  dropdowns      :Seq[MenuDropdown]
 )
 
 object BannerMenu:
   given format: Format[BannerMenu] =
     Json.format[BannerMenu]
 
+  val empty: BannerMenu =
+    BannerMenu(
+      brand = TopMenu("brand", "MDTP", Some("/")),
+      topLevelLinks = Seq.empty,
+      dropdowns = Seq.empty
+      )
+
 final case class MenuDropdown(
-  id     :String,
-  name   :String,
-  href   :Option[String],
-  items  :Seq[MenuLink],
-  dropDownRole: Seq[Role] = Nil
+  id           :String,
+  name         :String,
+  href         :Option[String],
+  items        :Seq[MenuLink],
+  dropDownRole : Seq[Role] = Nil
 )
 
 object MenuDropdown {
@@ -58,35 +65,31 @@ object MenuDropdown {
 }
 
 final case class TopMenu(
-  name: String,
-  id: String,
-  description: String,
-  href: Option[String],
-  external: Boolean = false
+  name        :String,
+  id          :String,
+  href        :Option[String],
+  external    :Boolean = false
 ) extends MenuLink
 
 object TopMenu:
-  given format: Format[TopMenu] = Json.format[TopMenu]
-  def apply(name: String, id: String, description: String, href: String): TopMenu =
-    TopMenu(name, id, description, Some(href))
+  given format: Format[TopMenu]                                                   = Json.format[TopMenu]
+  def apply(name: String, id: String, href: String): TopMenu =
+    TopMenu(name, id, Some(href))
 
-  def apply(name: String, id: String, description: String): TopMenu =
-    TopMenu(name, id, description, None)
+  def apply(name: String, id: String): TopMenu =
+    TopMenu(name, id, None)
 
 final case class Page(
-  name: String,
-  id: String,
-  description: Option[String] = None,
-  href: Option[String],
-  external: Boolean = false) extends MenuLink
+  name        :String,
+  id          :String,
+  href        :Option[String],
+  external    :Boolean = false
+) extends MenuLink
 
 object Page:
   given format: Format[Page] = Json.format[Page]
 
-  def apply(name: String, id: String, description: String, href: String): Page =
-    Page(name, id, Some(description), Some(href))
-
-  def apply(name: String, id: String, description: String): Page =
-    Page(name, id, Some(description), None)
+  def apply(id: String, name: String, href: String): Page =
+    Page(name, id, Some(href))
 
 

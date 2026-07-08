@@ -22,15 +22,15 @@ import javax.inject.Singleton
 
 object NavMenuService {
 
-  val users: TopMenu        = TopMenu("Users", "users", "View and manage users", defaultHref("users"))
-  val teams: TopMenu        = TopMenu("Teams", "teams", "View and manage teams", defaultHref("teams"))
-  val repositories: TopMenu = TopMenu("Repositories", "repositories", "View and manage repositories", defaultHref("repositories"))
+  val users: TopMenu        = TopMenu("Users", "users", defaultHref("users"))
+  val teams: TopMenu        = TopMenu("Teams", "teams", defaultHref("teams"))
+  val repositories: TopMenu = TopMenu("Repositories", "repositories", defaultHref("repositories"))
   // These top-menu items are dropdown entry points, not standalone pages.
-  val deployments: TopMenu  = TopMenu("Deployments", "deployments", "View and manage deployments")
-  val shuttering: TopMenu   = TopMenu("Shuttering", "shuttering", "View and manage shuttering")
-  val health: TopMenu       = TopMenu("Health", "health", "View and manage health")
-  val explore: TopMenu      = TopMenu("Explore", "explore", "Explore services")
-  val docs: TopMenu         = TopMenu("Docs", "docs", "View documentation")
+  val deployments: TopMenu  = TopMenu("Deployments", "deployments")
+  val shuttering: TopMenu   = TopMenu("Shuttering", "shuttering")
+  val health: TopMenu       = TopMenu("Health", "health")
+  val explore: TopMenu      = TopMenu("Explore", "explore")
+  val docs: TopMenu         = TopMenu("Docs", "docs")
 
   val topLevelMenus: List[TopMenu] = List(
     users,
@@ -49,48 +49,48 @@ object NavMenuService {
 
 
   // pages
-  val createUser: Page                 = Page("Create a User", "create-user", "Create a user", "/create-user")
-  val createServiceUser: Page          = Page("Create a Service User", "create-service-user", "Create a service user", "/create-service-user")
-  val offboardUsers: Page              = Page("Offboard Users", "offboard-users", "Offboard users", "/offboard-users")
+  val createUser: Page                 = Page("Create a User", "create-user", "/create-user")
+  val createServiceUser: Page          = Page("Create a Service User", "create-service-user", "/create-service-user")
+  val offboardUsers: Page              = Page("Offboard Users", "offboard-users", "/offboard-users")
 
-  val deployService: Page              = Page("Deploy Service", "deploy-service", "Deploy a service", "/deploy-service")
-  val deploymentEvents: Page           = Page("Deployment Events", "deployment-events", "View deployment events", "/deployments/production")
-  val deploymentTimeline: Page         = Page("Version Timeline", "deployment-timeline", "View app versions across environments over time", "/deployment-timeline")
-  val whatsRunningWhere: Page          = Page("What's Running Where", "whats-running-where", "View what is running where", "/whats-running-where")
+  val deployService: Page              = Page("Deploy Service", "deploy-service", "/deploy-service")
+  val deploymentEvents: Page           = Page("Deployment Events", "deployment-events", "/deployments/production")
+  val deploymentTimeline: Page         = Page("Version Timeline", "deployment-timeline", "/deployment-timeline")
+  val whatsRunningWhere: Page          = Page("What's Running Where", "whats-running-where", "/whats-running-where")
  
-  val shutterOverviewFrontend: Page    = Page("Shutter Overview - Frontend", "shutter-overview-frontend", "View shutter overview for frontend", "/shuttering-overview/frontend")
-  val shutterOverviewApi: Page         = Page("Shutter Overview - Api", "shutter-overview-api", "View shutter overview for API", "/shuttering-overview/api")
-  val shutterOverviewRate: Page        = Page("Shutter Overview - Rate", "shutter-overview-rate", "View shutter overview for rate", "/shuttering-overview/rate")
-  val shutterEvents: Page              = Page("Shutter Events", "shutter-events", "View shutter events", "/shutter-events")
+  val shutterOverviewFrontend: Page    = Page("Shutter Overview - Frontend", "shutter-overview-frontend", "/shuttering-overview/frontend")
+  val shutterOverviewApi: Page         = Page("Shutter Overview - Api", "shutter-overview-api", "/shuttering-overview/api")
+  val shutterOverviewRate: Page        = Page("Shutter Overview - Rate", "shutter-overview-rate", "/shuttering-overview/rate")
+  val shutterEvents: Page              = Page("Shutter Events", "shutter-events", "/shutter-events")
 
-  val platformInitiatives: Page        = Page("Platform Initiatives", "platform-initiatives", "View platform initiatives", "/platform-initiatives")
+  val platformInitiatives: Page        = Page("Platform Initiatives", "platform-initiatives", "/platform-initiatives")
 
-  val bobbyRules: Page                 = Page("Bobby Rules", "bobby-rules", "View Bobby rules", "/bobbyrules")
-  val bobbyViolations: Page            = Page("Bobby Violations", "bobby-violations", "View Bobby violations", "/bobby-violations")
+  val bobbyRules: Page                 = Page("Bobby Rules", "bobby-rules", "/bobbyrules")
+  val bobbyViolations: Page            = Page("Bobby Violations", "bobby-violations", "/bobby-violations")
 
-  val leakDetectionRules: Page         = Page("Leak Detection - Rules", "leak-detection-rules", "View leak detection rules", "/leak-detection") 
-  val leakDetectionRepositories: Page  = Page("Leak Detection - Repositories", "leak-detection-repositories", "View leak detection repositories", "/leak-detection/repositories?includeViolations=true"  )
+  val leakDetectionRules: Page         = Page("Leak Detection - Rules", "leak-detection-rules", "/leak-detection")
+  val leakDetectionRepositories: Page  = Page("Leak Detection - Repositories", "leak-detection-repositories", "/leak-detection/repositories?includeViolations=true"  )
 
-  val vulnerabilities: Page            = Page("Vulnerabilities", "vulnerabilities", "View vulnerabilities", "/vulnerabilities?curationStatus=ACTION_REQUIRED")
-  val vulnerabilitiesServices: Page    = Page("Vulnerabilities - Services", "vulnerabilities-services", "View vulnerabilities by service", "/vulnerabilities/services")
-  val vulnerabilitiesTimeline: Page    = Page("Vulnerabilities - Timeline", "vulnerabilities-timeline", "View vulnerabilities timeline", "/vulnerabilities/timeline?curationStatus=ACTION_REQUIRED")
+  val vulnerabilities: Page            = Page("Vulnerabilities", "vulnerabilities", "/vulnerabilities?curationStatus=ACTION_REQUIRED")
+  val vulnerabilitiesServices: Page    = Page("Vulnerabilities - Services", "vulnerabilities-services", "/vulnerabilities/services")
+  val vulnerabilitiesTimeline: Page    = Page("Vulnerabilities - Timeline", "vulnerabilities-timeline", "/vulnerabilities/timeline?curationStatus=ACTION_REQUIRED")
 
-  val prCommenterRecommendations: Page = Page("PR-Commenter Recommendations", "pr-commenter-recommendations", "View PR-Commenter recommendations", "/pr-commenter/recommendations")
+  val prCommenterRecommendations: Page = Page("PR-Commenter Recommendations", "pr-commenter-recommendations", "/pr-commenter/recommendations")
 
-  val healthMetricsTimeline: Page      = Page("Health Metrics - Timeline", "health-metrics-timeline", "View health metrics timeline", "/health-metrics/timeline")
-  val operationalMetrics: Page         = Page("Operational Metrics", "operational-metrics", "View health and operational metrics", "/health-metrics")
+  val healthMetricsTimeline: Page      = Page("Health Metrics - Timeline", "health-metrics-timeline", "/health-metrics/timeline")
+  val operationalMetrics: Page         = Page("Operational Metrics", "operational-metrics", "/health-metrics")
 
-  val dependencyExplorer: Page         = Page("Dependency Explorer", "dependency-explorer", "Explore service dependencies", "/dependencyexplorer")
-  val jdkExplorer: Page                = Page("JDK Explorer", "jdk-explorer", "Explore JDK usage", "/jdkexplorer")
-  val sbtExplorer: Page                = Page("SBT Explorer", "sbt-explorer", "Explore SBT usage", "/sbtexplorer")
-  val searchByUrl: Page                = Page("Search by URL", "search-by-url", "Search services by URL", "/search#")
-  val searchConfig: Page               = Page("Search Config", "search-config", "Search service configuration", "/config/search")
-  val searchCommissioningState: Page   = Page("Search Commissioning State", "search-commissioning-state", "Search commissioning state", "/commissioning-state/search")
-  val serviceMetrics: Page             = Page("Service Metrics", "service-metrics", "View service metrics", "/service-metrics")
-  val testResults: Page                = Page("Test Results", "test-results", "View test results", "/tests")
-  val configWarnings: Page             = Page("Config Warnings", "config-warnings", "View configuration warnings", "/config/warnings/search")
-  val costExplorer: Page               = Page("Cost Explorer", "cost-explorer", "Explore service costs", "/cost-explorer")
-  val serviceProvision: Page           = Page("Service Provision", "service-provision", "View service provisioning status and details", "/service-provision")
+  val dependencyExplorer: Page         = Page("Dependency Explorer", "dependency-explorer", "/dependencyexplorer")
+  val jdkExplorer: Page                = Page("JDK Explorer", "jdk-explorer", "/jdkexplorer")
+  val sbtExplorer: Page                = Page("SBT Explorer", "sbt-explorer", "/sbtexplorer")
+  val searchByUrl: Page                = Page("Search by URL", "search-by-url", "/search#")
+  val searchConfig: Page               = Page("Search Config", "search-config", "/config/search")
+  val searchCommissioningState: Page   = Page("Search Commissioning State", "search-commissioning-state", "/commissioning-state/search")
+  val serviceMetrics: Page             = Page("Service Metrics", "service-metrics", "/service-metrics")
+  val testResults: Page                = Page("Test Results", "test-results", "/tests")
+  val configWarnings: Page             = Page("Config Warnings", "config-warnings", "/config/warnings/search")
+  val costExplorer: Page               = Page("Cost Explorer", "cost-explorer", "/cost-explorer")
+  val serviceProvision: Page           = Page("Service Provision", "service-provision", "/service-provision")
 
   private def defaultHref(id: String): String =
     Option(id)
@@ -119,7 +119,6 @@ class NavMenuService {
         TopMenu(
           name = "MDTP",
           id = "mdtp",
-          description = "MDTP Home",
           href = Some("/")
         ),
 
