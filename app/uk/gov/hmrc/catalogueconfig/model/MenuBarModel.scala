@@ -89,7 +89,7 @@ final case class Page(
 object Page:
   given format: Format[Page] = Json.format[Page]
 
-  def apply(id: String, name: String, href: String): Page =
+  def apply(name: String, id: String, href: String): Page =
     Page(name, id, Some(href))
 
 

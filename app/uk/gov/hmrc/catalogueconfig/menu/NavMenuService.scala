@@ -25,6 +25,7 @@ object NavMenuService {
   val users: TopMenu        = TopMenu("Users", "users", defaultHref("users"))
   val teams: TopMenu        = TopMenu("Teams", "teams", defaultHref("teams"))
   val repositories: TopMenu = TopMenu("Repositories", "repositories", defaultHref("repositories"))
+
   // These top-menu items are dropdown entry points, not standalone pages.
   val deployments: TopMenu  = TopMenu("Deployments", "deployments")
   val shuttering: TopMenu   = TopMenu("Shuttering", "shuttering")
@@ -42,11 +43,6 @@ object NavMenuService {
     explore,
     docs
   )
-
-  /**
-   * We have a scenario where whether a top-level item has a dropdown is determined by user permissions.
-   */
-
 
   // pages
   val createUser: Page                 = Page("Create a User", "create-user", "/create-user")
@@ -92,6 +88,9 @@ object NavMenuService {
   val costExplorer: Page               = Page("Cost Explorer", "cost-explorer", "/cost-explorer")
   val serviceProvision: Page           = Page("Service Provision", "service-provision", "/service-provision")
 
+  val MdtpHandbook = Page("MDTP Handbook", "mdtp-handbook", Some("https://docs.tax.service.gov.uk/mdtp-handbook/"), external = true)
+  val BlogPosts    = Page("Blog Posts", "blog-posts", Some("https://confluence.tools.tax.service.gov.uk/dosearchsite.action?cql=(label=catalogue and type=blogpost) order by created desc"), external = true)
+
   private def defaultHref(id: String): String =
     Option(id)
       .map(_.trim)
@@ -113,14 +112,14 @@ class NavMenuService {
                )
                .getOrElse("#")
 
-  def buildMenu(): BannerMenu =
+  def buildMenu(): BannerMenu = {
     BannerMenu(
       brand =
         TopMenu(
           name = "MDTP",
           id = "mdtp",
           href = Some("/")
-        ),
+          ),
 
       topLevelLinks = NavMenuService.topLevelMenus,
 
@@ -190,17 +189,17 @@ class NavMenuService {
             name = NavMenuService.explore.name,
             href = None,
             items = Seq(
-              Page(NavMenuService.dependencyExplorer.id, NavMenuService.dependencyExplorer.name, buildRelativeUrl(NavMenuService.dependencyExplorer)),
-              Page(NavMenuService.jdkExplorer.id, NavMenuService.jdkExplorer.name, buildRelativeUrl(NavMenuService.jdkExplorer)),
-              Page(NavMenuService.sbtExplorer.id, NavMenuService.sbtExplorer.name, buildRelativeUrl(NavMenuService.sbtExplorer)),
-              Page(NavMenuService.searchByUrl.id, NavMenuService.searchByUrl.name, buildRelativeUrl(NavMenuService.searchByUrl)),
-              Page(NavMenuService.searchConfig.id, NavMenuService.searchConfig.name, buildRelativeUrl(NavMenuService.searchConfig)),
-              Page(NavMenuService.searchCommissioningState.id, NavMenuService.searchCommissioningState.name, buildRelativeUrl(NavMenuService.searchCommissioningState)),
-              Page(NavMenuService.serviceMetrics.id, NavMenuService.serviceMetrics.name, buildRelativeUrl(NavMenuService.serviceMetrics)),
-              Page(NavMenuService.testResults.id, NavMenuService.testResults.name, buildRelativeUrl(NavMenuService.testResults)),
-              Page(NavMenuService.configWarnings.id, NavMenuService.configWarnings.name, buildRelativeUrl(NavMenuService.configWarnings)),
-              Page(NavMenuService.costExplorer.id, NavMenuService.costExplorer.name, buildRelativeUrl(NavMenuService.costExplorer)),
-              Page(NavMenuService.serviceProvision.id, NavMenuService.serviceProvision.name, buildRelativeUrl(NavMenuService.serviceProvision))
+              dependencyExplorer,
+              jdkExplorer,
+              sbtExplorer,
+              searchByUrl,
+              searchConfig,
+              searchCommissioningState,
+              serviceMetrics,
+              testResults,
+              configWarnings,
+              costExplorer,
+              serviceProvision
               )
             ),
 
@@ -209,22 +208,13 @@ class NavMenuService {
             name = NavMenuService.docs.name,
             href = None,
             items = Seq(
-              Page(
-                name = "MDTP Handbook",
-                id = "mdtp-handbook",
-                href = Some("https://docs.tax.service.gov.uk/mdtp-handbook/"),
-                external = true
-                ),
-              Page(
-                id = "blog-posts",
-                name = "Blog Posts",
-                href = Some("https://confluence.tools.tax.service.gov.uk/dosearchsite.action?cql=(label=catalogue and type=blogpost) order by created desc"),
-                external = true
-                )
+              MdtpHandbook,
+              BlogPosts
               )
             )
 
           )
       )
+  }
 
 }
