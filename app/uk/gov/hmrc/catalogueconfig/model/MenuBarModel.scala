@@ -44,11 +44,9 @@ object DropdownItem:
     )
   given format: Format[DropdownItem] = Json.format[DropdownItem]
 
-final case class DropdownSeparator() extends DropdownItem:
+case object DropdownSeparator extends DropdownItem:
+  given format: Format[DropdownSeparator.type] = Json.format[DropdownSeparator.type]
   override def isSeparator: Boolean = true
-
-object DropdownSeparator:
-  given format: Format[DropdownSeparator] = Json.format[DropdownSeparator]
 
 final case class BannerMenu(
   brand: MenuLink,

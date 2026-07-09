@@ -164,7 +164,7 @@ class NavMenuService {
               leakDetectionRules,
               leakDetectionRepositories,
 
-              DropdownSeparator(),
+              DropdownSeparator,
               vulnerabilities,
               vulnerabilitiesServices,
               vulnerabilitiesTimeline,
