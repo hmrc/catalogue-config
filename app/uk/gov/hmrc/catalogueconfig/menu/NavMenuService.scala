@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.catalogueconfig.menu
 
-import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, MenuDropdown, MenuLink, Page, TopMenu}
+import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, DropdownSeparator, MenuDropdown, Page, TopMenu}
 
 import javax.inject.Singleton
 
@@ -164,6 +164,7 @@ class NavMenuService {
               leakDetectionRules,
               leakDetectionRepositories,
 
+              DropdownSeparator(),
               vulnerabilities,
               vulnerabilitiesServices,
               vulnerabilitiesTimeline,

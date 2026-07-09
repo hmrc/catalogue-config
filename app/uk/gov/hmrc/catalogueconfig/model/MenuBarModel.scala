@@ -34,10 +34,26 @@ object MenuLink:
     )
   given format: Format[MenuLink] = Json.format[MenuLink]
 
+sealed trait DropdownItem:
+  def isSeparator: Boolean = false
+  def asPage: Option[Page] = None
+
+object DropdownItem:
+  given JsonConfiguration            = JsonConfiguration(
+    typeNaming = JsonNaming(_.split("\\.").last)
+    )
+  given format: Format[DropdownItem] = Json.format[DropdownItem]
+
+final case class DropdownSeparator() extends DropdownItem:
+  override def isSeparator: Boolean = true
+
+object DropdownSeparator:
+  given format: Format[DropdownSeparator] = Json.format[DropdownSeparator]
+
 final case class BannerMenu(
-  brand          :MenuLink,
-  topLevelLinks  :Seq[MenuLink],
-  dropdowns      :Seq[MenuDropdown]
+  brand: MenuLink,
+  topLevelLinks: Seq[MenuLink],
+  dropdowns: Seq[MenuDropdown]
 )
 
 object BannerMenu:
@@ -55,7 +71,7 @@ final case class MenuDropdown(
   id           :String,
   name         :String,
   href         :Option[String],
-  items        :Seq[MenuLink],
+  items        :Seq[DropdownItem],
   dropDownRole : Seq[Role] = Nil
 )
 
@@ -72,7 +88,7 @@ final case class TopMenu(
 ) extends MenuLink
 
 object TopMenu:
-  given format: Format[TopMenu]                                                   = Json.format[TopMenu]
+  given format: Format[TopMenu] = Json.format[TopMenu]
   def apply(name: String, id: String, href: String): TopMenu =
     TopMenu(name, id, Some(href))
 
@@ -85,6 +101,8 @@ final case class Page(
   href        :Option[String],
   external    :Boolean = false
 ) extends MenuLink
+  with DropdownItem:
+  override def asPage: Option[Page] = Some(this)
 
 object Page:
   given format: Format[Page] = Json.format[Page]
