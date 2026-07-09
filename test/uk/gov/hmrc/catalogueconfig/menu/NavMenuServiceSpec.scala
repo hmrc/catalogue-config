@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.catalogueconfig.menu
 
+import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class NavMenuServiceSpec
   extends AnyWordSpec
-    with Matchers:
+    with Matchers
+    with OptionValues:
 
   private val service = new NavMenuService()
 
@@ -38,82 +40,71 @@ class NavMenuServiceSpec
 
     "include all 8 top-level menu items" in {
       val menu = service.buildMenu()
-
       menu.topLevelLinks.length shouldBe 8
     }
 
     "include top-level menu 'Users' with correct structure" in {
       val users = topMenus.find(_.id == "users")
 
-      users should not be empty
-      users.get.name shouldBe "Users"
-      users.get.href shouldBe Some("/users")
+      users.value.name shouldBe "Users"
+      users.value.href should contain ("/users")
     }
 
     "include top-level menu 'Teams' with correct structure" in {
       val teams = topMenus.find(_.id == "teams")
 
-      teams should not be empty
-      teams.get.name shouldBe "Teams"
-      teams.get.href shouldBe Some("/teams")
+      teams.value.name shouldBe "Teams"
+      teams.value.href should contain ("/teams")
     }
 
     "include top-level menu 'Repositories' with correct structure" in {
       val repositories = topMenus.find(_.id == "repositories")
 
-      repositories should not be empty
-      repositories.get.name shouldBe "Repositories"
-      repositories.get.href shouldBe Some("/repositories")
+      repositories.value.name shouldBe "Repositories"
+      repositories.value.href should contain ("/repositories")
     }
 
     "include top-level menu 'Deployments' with correct structure" in {
       val deployments = topMenus.find(_.id == "deployments")
 
-      deployments should not be empty
-      deployments.get.name shouldBe "Deployments"
-      deployments.get.href shouldBe None
+      deployments.value.name shouldBe "Deployments"
+      deployments.value.href shouldBe None
     }
 
     "include top-level menu 'Shuttering' with correct structure" in {
       val shuttering = topMenus.find(_.id == "shuttering")
 
-      shuttering should not be empty
-      shuttering.get.name shouldBe "Shuttering"
-      shuttering.get.href shouldBe None
+      shuttering.value.name shouldBe "Shuttering"
+      shuttering.value.href shouldBe None
     }
 
     "include top-level menu 'Health' with correct structure" in {
       val health = topMenus.find(_.id == "health")
 
-      health should not be empty
-      health.get.name shouldBe "Health"
-      health.get.href shouldBe None
+      health.value.name shouldBe "Health"
+      health.value.href shouldBe None
     }
 
     "include top-level menu 'Explore' with correct structure" in {
       val explore = topMenus.find(_.id == "explore")
-
-      explore should not be empty
-      explore.get.name shouldBe "Explore"
-      explore.get.href shouldBe None
+      explore.value.name shouldBe "Explore"
+      explore.value.href shouldBe None
     }
 
     "include top-level menu 'Docs' with correct structure" in {
       val docs = topMenus.find(_.id == "docs")
 
       docs should not be empty
-      docs.get.name shouldBe "Docs"
-      docs.get.href shouldBe None
+      docs.value.name shouldBe "Docs"
+      docs.value.href shouldBe None
     }
 
     "ensure all top-level links with href follow the /{id} pattern" in {
       NavMenuService.topLevelMenus
         .filter(_.href.isDefined)
         .foreach { link =>
-          val hrefValue = link.href.get
-          hrefValue should startWith("/")
           // For top-level links with href, verify they match /{id} pattern
-          hrefValue should (equal(s"/${link.id}") or equal("/"))
+          link.href.value shouldBe s"/${link.id}"
         }
     }
 
@@ -125,7 +116,5 @@ class NavMenuServiceSpec
 
       actualIds shouldBe expectedIds
     }
-
-    // Note: Dropdown items testing is deferred to a future test phase
   }
 

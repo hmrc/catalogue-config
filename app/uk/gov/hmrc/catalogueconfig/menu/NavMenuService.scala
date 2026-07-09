@@ -103,15 +103,6 @@ class NavMenuService {
   
   import NavMenuService._
 
-  private def buildRelativeUrl(target: MenuLink): String =
-    target.href.map(_.trim)
-               .map(href =>
-                 if (href.isBlank) "/"
-                 else if (href.startsWith("/") || href.startsWith("#")) href
-                 else s"/${href.stripPrefix("/")}"
-               )
-               .getOrElse("#")
-
   def buildMenu(): BannerMenu = {
     BannerMenu(
       brand =
@@ -128,7 +119,7 @@ class NavMenuService {
           MenuDropdown(
             id = NavMenuService.users.id,
             name = NavMenuService.users.name,
-            href = Some(buildRelativeUrl(users)),
+            href = Some("/users"),
             items = Seq(
               createUser,
               createServiceUser,
