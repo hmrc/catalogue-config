@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.model
+package uk.gov.hmrc.catalogueconfig.search
 
-import play.api.libs.json.{Format, Json}
+import play.api.Configuration
 
-final case class SearchTerm(
-  linkType        :String,
-  name            :String,
-  href            :String,
-  weight          :Float = 0.5f,
-  hints           :Set[String] = Set.empty,
-  openInNewWindow :Boolean = false
-) {
-  lazy val terms: Set[String] =
-    Set(name, linkType).union(hints).map(_.toLowerCase.replaceAll("[ \\-_]", ""))
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.duration.FiniteDuration
+
+
+@Singleton
+class SearchConfig @Inject()(config: Configuration) {
+  val indexRebuildEnabled: Boolean =
+    config.get[Boolean]("search.rebuild.enabled")
+
+  val indexRebuildInterval: FiniteDuration =
+    config.get[FiniteDuration]("search.rebuild.interval")
 }
 
-object SearchTerm {
-  implicit val format: Format[SearchTerm] = Json.format[SearchTerm]
-}

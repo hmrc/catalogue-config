@@ -18,8 +18,21 @@ package uk.gov.hmrc.catalogueconfig.config
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class AppConfig @Inject()(config: Configuration):
+class AppConfig @Inject()(
+  config: Configuration,
+  servicesConfig: ServicesConfig
+):
 
   val appName: String = config.get[String]("appName")
+
+  val catalogueFrontendBaseUrl: String =
+    servicesConfig.baseUrl("catalogue-frontend")
+
+  val operationalMetricsFrontendBaseUrl: String =
+    servicesConfig.baseUrl("operational-metrics-frontend")
+
+  def catalogueUrl(path: String): String =
+    s"$catalogueFrontendBaseUrl/${path.stripPrefix("/")}"

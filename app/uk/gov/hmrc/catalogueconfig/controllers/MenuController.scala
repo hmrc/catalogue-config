@@ -37,6 +37,7 @@ class MenuController @Inject()(
 
 
   def search(): Action[AnyContent] = Action:
+    // TODO: Consider whether search belongs in this controller
     Ok(Json.toJson(searchService.searchIndex))
 
 

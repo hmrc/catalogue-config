@@ -16,20 +16,22 @@
 
 package uk.gov.hmrc.catalogueconfig.model
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, Reads}
 
-final case class SearchTerm(
-  linkType        :String,
-  name            :String,
-  href            :String,
-  weight          :Float = 0.5f,
-  hints           :Set[String] = Set.empty,
-  openInNewWindow :Boolean = false
-) {
-  lazy val terms: Set[String] =
-    Set(name, linkType).union(hints).map(_.toLowerCase.replaceAll("[ \\-_]", ""))
+final case class ServiceLeadTimesResponse(
+  serviceName: String,
+  leadTimes: Seq[LeadTimeMeasurement]
+)
+
+object ServiceLeadTimesResponse {
+  implicit val reads: Reads[ServiceLeadTimesResponse] = Json.reads[ServiceLeadTimesResponse]
 }
 
-object SearchTerm {
-  implicit val format: Format[SearchTerm] = Json.format[SearchTerm]
+final case class LeadTimeMeasurement(
+  environment: String,
+  version: String
+)
+
+object LeadTimeMeasurement {
+  implicit val reads: Reads[LeadTimeMeasurement] = Json.reads[LeadTimeMeasurement]
 }

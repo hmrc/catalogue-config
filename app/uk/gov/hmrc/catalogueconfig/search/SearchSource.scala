@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.model
+package uk.gov.hmrc.catalogueconfig.search
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 
-final case class SearchTerm(
-  linkType        :String,
-  name            :String,
-  href            :String,
-  weight          :Float = 0.5f,
-  hints           :Set[String] = Set.empty,
-  openInNewWindow :Boolean = false
-) {
-  lazy val terms: Set[String] =
-    Set(name, linkType).union(hints).map(_.toLowerCase.replaceAll("[ \\-_]", ""))
+import scala.concurrent.Future
+
+trait SearchSource {
+  def terms(): Future[Seq[SearchTerm]]
 }
 
-object SearchTerm {
-  implicit val format: Format[SearchTerm] = Json.format[SearchTerm]
-}

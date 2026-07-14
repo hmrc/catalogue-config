@@ -16,20 +16,10 @@
 
 package uk.gov.hmrc.catalogueconfig.model
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, Reads}
 
-final case class SearchTerm(
-  linkType        :String,
-  name            :String,
-  href            :String,
-  weight          :Float = 0.5f,
-  hints           :Set[String] = Set.empty,
-  openInNewWindow :Boolean = false
-) {
-  lazy val terms: Set[String] =
-    Set(name, linkType).union(hints).map(_.toLowerCase.replaceAll("[ \\-_]", ""))
-}
+final case class PrCommenterReport(name: String)
 
-object SearchTerm {
-  implicit val format: Format[SearchTerm] = Json.format[SearchTerm]
+object PrCommenterReport {
+  implicit val reads: Reads[PrCommenterReport] = Json.reads[PrCommenterReport]
 }
