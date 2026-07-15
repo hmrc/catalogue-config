@@ -27,8 +27,11 @@ object Role:
   val values: List[Role] =
     List(CanCreate, CanManageUsers)
 
-  private val byIdentifier: Map[String, Role] =
+  private val rolesByIdentifier: Map[String, Role] =
     values.map(r => r.roleIdentifier -> r).toMap
+
+  def byIdentifier(identifier: String): Option[Role] =
+    rolesByIdentifier.get(identifier)
 
   given Format[Role] with
     override def writes(o: Role): JsValue =
@@ -36,7 +39,9 @@ object Role:
 
     override def reads(json: JsValue): JsResult[Role] =
       json.validate[String].flatMap { identifier =>
-        byIdentifier.get(identifier) match
+        rolesByIdentifier.get(identifier) match
           case Some(role) => JsSuccess(role)
           case None       => JsError(s"Unknown Role identifier: $identifier")
       }
+
+
