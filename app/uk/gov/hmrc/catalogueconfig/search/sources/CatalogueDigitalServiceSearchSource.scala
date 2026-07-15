@@ -16,42 +16,43 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.CatalogueConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
-import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.catalogueconfig.search.{SearchSource, SearchUrlConfig}
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueDigitalServiceSearchSource @Inject()(
     connector: CatalogueConnector,
-    appConfig: AppConfig
+    urlConfig: SearchUrlConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private def encodeQuery(s: String): String =
-    URLEncoder.encode(s, StandardCharsets.UTF_8.name())
+  private val catalogueFrontendBaseUrl: String =
+    urlConfig.catalogueFrontendBaseUrl
 
-  private def encodePath(s: String): String =
-    encodeQuery(s).replace("+", "%20")
+  private val digitalServicesPath: String =
+    "/digital-services/"
+
+  private val deploymentsByDigitalServicePath: String =
+    "/whats-running-where?digitalService="
 
   override def terms(): Future[Seq[SearchTerm]] =
     connector.allDigitalServices().map { digitalServices =>
       digitalServices.flatMap { ds =>
+        val encodedDigitalService = SearchUrlEncoding.encodeQuery(ds)
         Seq(
           SearchTerm(
             linkType = "digital service",
             name     = ds,
-            href     = appConfig.catalogueUrl(s"/digital-services/${encodePath(ds)}"),
+            href     = s"$catalogueFrontendBaseUrl$digitalServicesPath${SearchUrlEncoding.encodePathSegment(ds)}",
             weight   = 0.5f
           ),
           SearchTerm(
             linkType = "deployments (digital service)",
             name     = ds,
-            href     = appConfig.catalogueUrl(s"/whats-running-where?digitalService=${encodeQuery(ds)}"),
+            href     = s"$catalogueFrontendBaseUrl$deploymentsByDigitalServicePath$encodedDigitalService",
             weight   = 0.5f
           )
         )

@@ -16,24 +16,25 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.PrCommenterConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CataloguePrCommenterSearchSource @Inject()(
     connector: PrCommenterConnector,
-    appConfig: AppConfig
+    servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private def encodeQuery(s: String): String =
-    URLEncoder.encode(s, StandardCharsets.UTF_8.name())
+  private val catalogueFrontendBaseUrl: String =
+    servicesConfig.baseUrl("catalogue-frontend").stripSuffix("/")
+
+  private val recommendationsPath: String =
+    "/pr-commenter/recommendations?name="
 
   override def terms(): Future[Seq[SearchTerm]] =
     connector.allReports().map { reports =>
@@ -41,7 +42,7 @@ class CataloguePrCommenterSearchSource @Inject()(
         SearchTerm(
           linkType = "recommendations",
           name     = report.name,
-          href     = appConfig.catalogueUrl(s"/pr-commenter/recommendations?name=${encodeQuery(report.name)}"),
+          href     = s"$catalogueFrontendBaseUrl$recommendationsPath${SearchUrlEncoding.encodeQuery(report.name)}",
           weight   = 0.5f
         )
       }

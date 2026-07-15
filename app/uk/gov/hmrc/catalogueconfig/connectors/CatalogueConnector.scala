@@ -17,9 +17,8 @@
 package uk.gov.hmrc.catalogueconfig.connectors
 
 import play.api.Logging
-import play.api.libs.json.{JsArray, Json, Reads}
+import play.api.libs.json.{Json, Reads}
 import play.api.libs.ws.WSClient
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.model.{CatalogueRepository, CatalogueTeam}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 

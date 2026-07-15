@@ -16,13 +16,10 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.ServiceConfigsConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
-import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.catalogueconfig.search.{SearchSource, SearchUrlConfig}
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,14 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CatalogueServiceConfigSearchSource @Inject()(
     connector: ServiceConfigsConnector,
-    appConfig: AppConfig
+    urlConfig: SearchUrlConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private def encodeQuery(s: String): String =
-    URLEncoder.encode(s, StandardCharsets.UTF_8.name())
+  private val catalogueFrontendBaseUrl: String =
+    urlConfig.catalogueFrontendBaseUrl
 
-  private def encodePath(s: String): String =
-    encodeQuery(s).replace("+", "%20")
+  private val servicePath: String =
+    "/service/"
 
   override def terms(): Future[Seq[SearchTerm]] =
     connector.serviceRepoMappings().map { mappings =>
@@ -48,7 +45,7 @@ class CatalogueServiceConfigSearchSource @Inject()(
         SearchTerm(
           linkType = "Service",
           name     = mapping.serviceName,
-          href     = appConfig.catalogueUrl(s"/service/${encodePath(mapping.serviceName)}"),
+          href     = s"$catalogueFrontendBaseUrl$servicePath${SearchUrlEncoding.encodePathSegment(mapping.serviceName)}",
           weight   = 0.5f,
           hints    = Set("repository")
         )

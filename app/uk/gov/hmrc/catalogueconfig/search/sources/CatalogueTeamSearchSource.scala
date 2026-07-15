@@ -16,39 +16,43 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.CatalogueConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
-import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.catalogueconfig.search.{SearchSource, SearchUrlConfig}
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueTeamSearchSource @Inject()(
     connector: CatalogueConnector,
-    appConfig: AppConfig
+    urlConfig: SearchUrlConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private def encodeQuery(s: String): String =
-    URLEncoder.encode(s, StandardCharsets.UTF_8.name())
+  private val catalogueFrontendBaseUrl: String =
+    urlConfig.catalogueFrontendBaseUrl
+
+  private val teamsSearchPath: String =
+    "/teams?name="
+
+  private val deploymentsByTeamSearchPath: String =
+    "/whats-running-where?teamName="
 
   override def terms(): Future[Seq[SearchTerm]] =
     connector.allTeams().map { teams =>
       teams.flatMap { team =>
+        val encodedTeamName = SearchUrlEncoding.encodeQuery(team.name)
         Seq(
           SearchTerm(
             linkType = "team",
             name     = team.name,
-            href     = appConfig.catalogueUrl(s"/teams?name=${encodeQuery(team.name)}"),
+            href     = s"$catalogueFrontendBaseUrl$teamsSearchPath$encodedTeamName",
             weight   = 0.5f
           ),
           SearchTerm(
             linkType = "deployments by team",
             name     = team.name,
-            href     = appConfig.catalogueUrl(s"/whats-running-where?teamName=${encodeQuery(team.name)}"),
+            href     = s"$catalogueFrontendBaseUrl$deploymentsByTeamSearchPath$encodedTeamName",
             weight   = 0.5f
           )
         )

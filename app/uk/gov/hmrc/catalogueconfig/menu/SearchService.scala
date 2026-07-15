@@ -17,13 +17,17 @@
 package uk.gov.hmrc.catalogueconfig.menu
 
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
+import uk.gov.hmrc.catalogueconfig.search.SearchIndex
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SearchService:
-
-  def searchIndex: List[SearchTerm] =
+class SearchService @Inject(searchIndex: SearchIndex):
+  
+  
+  def fullSearchIndex: List[SearchTerm] = searchIndex.allTerms.toList
+  
+  def staticSearchIndex: List[SearchTerm] =
     // example search index
     List(
       SearchTerm(

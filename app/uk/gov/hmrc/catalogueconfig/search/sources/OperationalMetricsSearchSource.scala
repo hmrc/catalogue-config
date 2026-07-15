@@ -16,31 +16,35 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.OperationalMetricsConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OperationalMetricsSearchSource @Inject()(
     connector: OperationalMetricsConnector,
-    appConfig: AppConfig
+    servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
+
+  private val operationalMetricsFrontendBaseUrl: String =
+    servicesConfig.baseUrl("operational-metrics-frontend").stripSuffix("/")
+
+  private val serviceQueryPath: String =
+    "?service="
 
   override def terms(): Future[Seq[SearchTerm]] =
     connector.getServiceLeadTimes().map { services =>
       services.map { service =>
-        val encodedName = URLEncoder.encode(service.serviceName, StandardCharsets.UTF_8.name())
+        val encodedName = SearchUrlEncoding.encodeQuery(service.serviceName)
         val hints       = service.leadTimes.flatMap(lt => Seq(lt.environment, lt.version)).toSet
         SearchTerm(
           linkType = "operational metric",
           name = service.serviceName,
-          href = s"${appConfig.operationalMetricsFrontendBaseUrl}?service=$encodedName",
+          href = s"$operationalMetricsFrontendBaseUrl$serviceQueryPath$encodedName",
           weight = 0.7f,
           hints = hints,
           openInNewWindow = false

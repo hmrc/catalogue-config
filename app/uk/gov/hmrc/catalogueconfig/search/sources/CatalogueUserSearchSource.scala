@@ -16,27 +16,25 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.UserManagementConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueUserSearchSource @Inject()(
     connector: UserManagementConnector,
-    appConfig: AppConfig
+    servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private def encodeQuery(s: String): String =
-    URLEncoder.encode(s, StandardCharsets.UTF_8.name())
+  private val catalogueFrontendBaseUrl: String =
+    servicesConfig.baseUrl("catalogue-frontend").stripSuffix("/")
 
-  private def encodePath(s: String): String =
-    encodeQuery(s).replace("+", "%20")
+  private val usersPath: String =
+    "/users/"
 
   override def terms(): Future[Seq[SearchTerm]] =
     connector.getActiveUsers().map { users =>
@@ -44,7 +42,7 @@ class CatalogueUserSearchSource @Inject()(
         SearchTerm(
           linkType = "users",
           name     = user.username,
-          href     = appConfig.catalogueUrl(s"/users/${encodePath(user.username)}"),
+          href     = s"$catalogueFrontendBaseUrl$usersPath${SearchUrlEncoding.encodePathSegment(user.username)}",
           weight   = 0.5f
         )
       }

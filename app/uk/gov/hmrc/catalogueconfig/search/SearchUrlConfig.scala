@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.config
+package uk.gov.hmrc.catalogueconfig.search
+
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 @Singleton
-class AppConfig @Inject()(
-  config: Configuration
-):
+class SearchUrlConfig @Inject()(servicesConfig: ServicesConfig) {
+  val catalogueFrontendBaseUrl: String =
+    servicesConfig.baseUrl("catalogue-frontend").stripSuffix("/")
 
-  val appName: String = config.get[String]("appName")
+  val operationalMetricsFrontendBaseUrl: String =
+    servicesConfig.baseUrl("operational-metrics-frontend").stripSuffix("/")
+}
 

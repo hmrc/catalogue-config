@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.config
+package uk.gov.hmrc.catalogueconfig.search.sources
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
-@Singleton
-class AppConfig @Inject()(
-  config: Configuration
-):
+private[sources] object SearchUrlEncoding {
+  def encodeQuery(value: String): String =
+    URLEncoder.encode(value, StandardCharsets.UTF_8.name())
 
-  val appName: String = config.get[String]("appName")
+  def encodePathSegment(value: String): String =
+    encodeQuery(value).replace("+", "%20")
+}
 

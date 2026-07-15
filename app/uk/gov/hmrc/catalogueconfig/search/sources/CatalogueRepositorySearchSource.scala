@@ -16,13 +16,10 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.config.AppConfig
 import uk.gov.hmrc.catalogueconfig.connectors.CatalogueConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
-import uk.gov.hmrc.catalogueconfig.search.SearchSource
+import uk.gov.hmrc.catalogueconfig.search.{SearchSource, SearchUrlConfig}
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,14 +38,29 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CatalogueRepositorySearchSource @Inject()(
     connector: CatalogueConnector,
-    appConfig: AppConfig
+    urlConfig: SearchUrlConfig
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private def encodeQuery(s: String): String =
-    URLEncoder.encode(s, StandardCharsets.UTF_8.name())
+  private val catalogueFrontendBaseUrl: String =
+    urlConfig.catalogueFrontendBaseUrl
 
-  private def encodePath(s: String): String =
-    encodeQuery(s).replace("+", "%20")
+  private val repositoriesSearchPath: String =
+    "/repositories?name="
+
+  private val leaksPath: String =
+    "/leak-detection/repositories/"
+
+  private val deployServicePath: String =
+    "/deploy-service?serviceName="
+
+  private val searchConfigPath: String =
+    "/search-config?serviceName="
+
+  private val deploymentTimelinePath: String =
+    "/deployment-timeline?serviceName="
+
+  private val commissioningStatePath: String =
+    "/search-commissioning-state?serviceName="
 
   private def repoTypeLinkType(repoType: String): String =
     repoType match {
@@ -59,18 +71,19 @@ class CatalogueRepositorySearchSource @Inject()(
   override def terms(): Future[Seq[SearchTerm]] =
     connector.allRepositories().map { repos =>
       repos.flatMap { repo =>
+        val encodedRepoName = SearchUrlEncoding.encodeQuery(repo.name)
         val base = Seq(
           SearchTerm(
             linkType = repoTypeLinkType(repo.repoType),
             name     = repo.name,
-            href     = appConfig.catalogueUrl(s"/repositories?name=${encodeQuery(repo.name)}"),
+            href     = s"$catalogueFrontendBaseUrl$repositoriesSearchPath$encodedRepoName",
             weight   = 0.5f,
             hints    = Set("repository")
           ),
           SearchTerm(
             linkType = "leak",
             name     = repo.name,
-            href     = appConfig.catalogueUrl(s"/leak-detection/repositories/${encodePath(repo.name)}"),
+            href     = s"$catalogueFrontendBaseUrl$leaksPath${SearchUrlEncoding.encodePathSegment(repo.name)}",
             weight   = 0.5f
           )
         )
@@ -81,22 +94,22 @@ class CatalogueRepositorySearchSource @Inject()(
               SearchTerm(
                 linkType = "deploy",
                 name     = repo.name,
-                href     = appConfig.catalogueUrl(s"/deploy-service?serviceName=${encodeQuery(repo.name)}")
+                href     = s"$catalogueFrontendBaseUrl$deployServicePath$encodedRepoName"
               ),
               SearchTerm(
                 linkType = "config",
                 name     = repo.name,
-                href     = appConfig.catalogueUrl(s"/search-config?serviceName=${encodeQuery(repo.name)}")
+                href     = s"$catalogueFrontendBaseUrl$searchConfigPath$encodedRepoName"
               ),
               SearchTerm(
                 linkType = "timeline",
                 name     = repo.name,
-                href     = appConfig.catalogueUrl(s"/deployment-timeline?serviceName=${encodeQuery(repo.name)}")
+                href     = s"$catalogueFrontendBaseUrl$deploymentTimelinePath$encodedRepoName"
               ),
               SearchTerm(
                 linkType = "commissioning state",
                 name     = repo.name,
-                href     = appConfig.catalogueUrl(s"/search-commissioning-state?serviceName=${encodeQuery(repo.name)}")
+                href     = s"$catalogueFrontendBaseUrl$commissioningStatePath$encodedRepoName"
               )
             )
           else Seq.empty
