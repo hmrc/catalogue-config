@@ -20,25 +20,49 @@ import play.api.libs.json.Json
 import play.api.mvc.*
 import uk.gov.hmrc.catalogueconfig.UserContext
 import uk.gov.hmrc.catalogueconfig.menu.{NavMenuService, SearchService}
+import uk.gov.hmrc.internalauth.client.{BackendAuthComponents, IAAction, Resource, ResourceType, Retrieval, ~}
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MenuController @Inject()(
     val controllerComponents : ControllerComponents,
     menuService              : NavMenuService,
-    searchService            : SearchService
+    searchService            : SearchService,
+    auth                     : BackendAuthComponents
+)(
+    using ExecutionContext
 ) extends BaseController:
 
-  def menu(): Action[AnyContent] = Action: request =>
-    val userContext = request.getQueryString("role")
-      .map(roleId => UserContext.fromRoleIdentifier(roleId))
-      .getOrElse(UserContext.empty)
-    Ok(Json.toJson(menuService.buildMenu(userContext)))
+  private val menuResourceType: ResourceType =
+    ResourceType("catalogue-frontend")
 
+  private val menuUserActionsRetrieval: Retrieval[Set[Resource] ~ Set[Resource]] =
+    Retrieval.locations(
+      resourceType = Some(menuResourceType),
+      action       = Some(IAAction("CREATE_USER"))
+    ) ~
+      Retrieval.locations(
+        resourceType = Some(menuResourceType),
+        action       = Some(IAAction("MANAGE_USER"))
+      )
+
+  def menu(): Action[AnyContent] =
+    auth
+      .authenticatedAction(
+        retrieval = menuUserActionsRetrieval
+      )
+      .async: request =>
+        val createUserResources ~ manageUserResources = request.retrieval
+        val userContext =
+          UserContext(
+            canCreateUser = createUserResources.nonEmpty,
+            canManageUser = manageUserResources.nonEmpty
+          )
+
+        Future.successful(Ok(Json.toJson(menuService.buildMenu(userContext))))
 
   def search(): Action[AnyContent] = Action:
     // TODO: Consider whether search belongs in this controller
     Ok(Json.toJson(searchService.fullSearchIndex))
-
-

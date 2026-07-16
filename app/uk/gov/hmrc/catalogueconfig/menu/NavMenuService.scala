@@ -17,7 +17,6 @@
 package uk.gov.hmrc.catalogueconfig.menu
 
 import uk.gov.hmrc.catalogueconfig.UserContext
-import uk.gov.hmrc.catalogueconfig.model.Role.CanManageUsers
 import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, DropdownSeparator, MenuDropdown, Page, TopMenu}
 
 import javax.inject.Singleton
@@ -106,6 +105,9 @@ class NavMenuService {
   import NavMenuService._
 
   def buildMenu(userContext: UserContext = UserContext.empty): BannerMenu = {
+    val usersDropdowns: Seq[MenuDropdown] =
+      usersDropdown(userContext).toSeq
+
     BannerMenu(
       brand =
         TopMenu(
@@ -117,19 +119,7 @@ class NavMenuService {
       topLevelLinks = NavMenuService.topLevelMenus,
 
       dropdowns =
-        Seq(
-          MenuDropdown(
-            id = NavMenuService.users.id,
-            name = NavMenuService.users.name,
-            href = Some("/users"),
-            items = Seq(
-              createUser,
-              createServiceUser,
-              offboardUsers
-              ),
-            dropDownRole = List(CanManageUsers)
-            ),
-
+        usersDropdowns ++ Seq(
           MenuDropdown(
             id = NavMenuService.deployments.id,
             name = NavMenuService.deployments.name,
@@ -207,9 +197,38 @@ class NavMenuService {
               BlogPosts
               )
             )
-
-          ).filter(dropdown => userContext.hasAnyRole(dropdown.dropDownRole))
+          )
       )
   }
+
+  private def usersDropdown(userContext: UserContext): Option[MenuDropdown] =
+    val createItems: Seq[Page] =
+      if userContext.canCreateUser then
+        Seq(
+          createUser,
+          createServiceUser
+        )
+      else
+        Seq.empty
+
+    val manageItems: Seq[Page] =
+      if userContext.canManageUser then
+        Seq(
+          offboardUsers
+        )
+      else
+        Seq.empty
+
+    val items: Seq[Page] =
+      createItems ++ manageItems
+
+    Option.when(items.nonEmpty)(
+      MenuDropdown(
+        id = NavMenuService.users.id,
+        name = NavMenuService.users.name,
+        href = Some("/users"),
+        items = items
+      )
+    )
 
 }

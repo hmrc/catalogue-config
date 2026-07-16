@@ -20,7 +20,6 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.catalogueconfig.UserContext
-import uk.gov.hmrc.catalogueconfig.model.Role
 
 class NavMenuServiceSpec
   extends AnyWordSpec
@@ -120,46 +119,89 @@ class NavMenuServiceSpec
      }
    }
 
-   "NavMenuService.buildMenu with role filtering" should {
+   "NavMenuService.buildMenu users permissions" should {
 
-     "include all dropdowns except those requiring roles when no role is provided" in {
+     "AC-CFG-001: include top-level users link and no users dropdown when user has neither action" in {
        val menu = service.buildMenu(UserContext.empty)
 
-       // Only the 'users' dropdown requires a role (CanManageUsers), so it's filtered out
-       // Expected: 5 dropdowns (all except users out of 6 total)
-       menu.dropdowns.length shouldBe 5
+       val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
+       topLevelUsersLinks.length shouldBe 1
+       topLevelUsersLinks.head.href shouldBe Some("/users")
+
        menu.dropdowns.find(_.id == "users") shouldBe empty
      }
 
-     "include users dropdown when user has CanManageUsers role" in {
-       val userContext = UserContext(Set(Role.CanManageUsers))
-       val menu = service.buildMenu(userContext)
+     "AC-CFG-002: include create-only users dropdown entries when user has CREATE_USER only" in {
+       val menu = service.buildMenu(UserContext(canCreateUser = true, canManageUser = false))
 
-       // With the required role, all 6 dropdowns should be included
-       menu.dropdowns.length shouldBe 6
-       val usersDropdown = menu.dropdowns.find(_.id == "users")
-       usersDropdown should not be empty
-       usersDropdown.value.dropDownRole should contain only Role.CanManageUsers
+       val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
+       topLevelUsersLinks.length shouldBe 1
+       topLevelUsersLinks.head.href shouldBe Some("/users")
+
+       val usersDropdowns = menu.dropdowns.filter(_.id == "users")
+       usersDropdowns.length shouldBe 1
+       usersDropdowns.head.href shouldBe Some("/users")
+       usersDropdowns.head.items.flatMap(_.asPage.map(_.id)) shouldBe Seq(
+         "create-user",
+         "create-service-user"
+       )
      }
 
-     "exclude users dropdown when user does not have CanManageUsers role" in {
-       val userContext = UserContext(Set(Role.CanCreate))
-       val menu = service.buildMenu(userContext)
+     "AC-CFG-003: include manage-only users dropdown entries when user has MANAGE_USER only" in {
+       val menu = service.buildMenu(UserContext(canCreateUser = false, canManageUser = true))
 
+       val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
+       topLevelUsersLinks.length shouldBe 1
+       topLevelUsersLinks.head.href shouldBe Some("/users")
 
-       // User has CanCreate but not CanManageUsers, so users dropdown is filtered out
-       menu.dropdowns.length shouldBe 5
-       menu.dropdowns.find(_.id == "users") shouldBe empty
+       val usersDropdowns = menu.dropdowns.filter(_.id == "users")
+       usersDropdowns.length shouldBe 1
+       usersDropdowns.head.href shouldBe Some("/users")
+       usersDropdowns.head.items.flatMap(_.asPage.map(_.id)) shouldBe Seq("offboard-users")
      }
 
-     "include dropdowns with no role requirement regardless of user role" in {
-       val userContext = UserContext(Set(Role.CanCreate))
-       val menu = service.buildMenu(userContext)
+     "AC-CFG-004: include create and manage dropdown entries when user has both actions" in {
+       val menu = service.buildMenu(UserContext(canCreateUser = true, canManageUser = true))
 
-       // Deployments dropdown has no role requirement (empty list)
-       val deploymentsDropdown = menu.dropdowns.find(_.id == "deployments")
-       deploymentsDropdown should not be empty
-       deploymentsDropdown.value.dropDownRole shouldBe empty
+       val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
+       topLevelUsersLinks.length shouldBe 1
+       topLevelUsersLinks.head.href shouldBe Some("/users")
+
+       val usersDropdowns = menu.dropdowns.filter(_.id == "users")
+       usersDropdowns.length shouldBe 1
+       usersDropdowns.head.href shouldBe Some("/users")
+       usersDropdowns.head.items.flatMap(_.asPage.map(_.id)) shouldBe Seq(
+         "create-user",
+         "create-service-user",
+         "offboard-users"
+       )
+     }
+
+     "AC-CFG-005: keep exact users href mappings" in {
+       val menu = service.buildMenu(UserContext(canCreateUser = true, canManageUser = true))
+       val usersDropdown = menu.dropdowns.find(_.id == "users").value
+       val hrefByPageId = usersDropdown.items.flatMap(_.asPage).map(page => page.id -> page.href).toMap
+
+       hrefByPageId("create-user") shouldBe Some("/create-user")
+       hrefByPageId("create-service-user") shouldBe Some("/create-service-user")
+       hrefByPageId("offboard-users") shouldBe Some("/offboard-users")
+       menu.topLevelLinks.find(_.id == "users").value.href shouldBe Some("/users")
+       usersDropdown.href shouldBe Some("/users")
+     }
+
+     "AC-CFG-006 and AC-CFG-007: never emit an empty or duplicate users dropdown" in {
+       val permissionCombinations = Seq(
+         UserContext(canCreateUser = false, canManageUser = false),
+         UserContext(canCreateUser = true, canManageUser = false),
+         UserContext(canCreateUser = false, canManageUser = true),
+         UserContext(canCreateUser = true, canManageUser = true)
+       )
+
+       permissionCombinations.foreach { ctx =>
+         val menu = service.buildMenu(ctx)
+         menu.topLevelLinks.count(_.id == "users") shouldBe 1
+         menu.dropdowns.count(_.id == "users") should be <= 1
+         menu.dropdowns.find(_.id == "users").forall(_.items.nonEmpty) shouldBe true
+       }
      }
    }
-
