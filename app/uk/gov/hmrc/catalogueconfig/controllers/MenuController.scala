@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.catalogueconfig.controllers
 
-import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.*
+import uk.gov.hmrc.catalogueconfig.UserContext
 import uk.gov.hmrc.catalogueconfig.menu.{NavMenuService, SearchService}
-import uk.gov.hmrc.catalogueconfig.model.BannerMenu
 
 import javax.inject.{Inject, Singleton}
 
@@ -28,15 +27,18 @@ import javax.inject.{Inject, Singleton}
 class MenuController @Inject()(
     val controllerComponents : ControllerComponents,
     menuService              : NavMenuService,
-    searchService            : SearchService,
-    configuration            : Configuration
+    searchService            : SearchService
 ) extends BaseController:
 
-  def menu(): Action[AnyContent] = Action:
-    Ok(Json.toJson(menuService.buildMenu()))
+  def menu(): Action[AnyContent] = Action: request =>
+    val userContext = request.getQueryString("role")
+      .map(roleId => UserContext.fromRoleIdentifier(roleId))
+      .getOrElse(UserContext.empty)
+    Ok(Json.toJson(menuService.buildMenu(userContext)))
 
 
   def search(): Action[AnyContent] = Action:
-    Ok(Json.toJson(searchService.searchIndex))
+    // TODO: Consider whether search belongs in this controller
+    Ok(Json.toJson(searchService.fullSearchIndex))
 
 

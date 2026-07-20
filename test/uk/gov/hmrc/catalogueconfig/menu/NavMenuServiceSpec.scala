@@ -19,6 +19,8 @@ package uk.gov.hmrc.catalogueconfig.menu
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.catalogueconfig.UserContext
+import uk.gov.hmrc.catalogueconfig.model.Role
 
 class NavMenuServiceSpec
   extends AnyWordSpec
@@ -108,13 +110,56 @@ class NavMenuServiceSpec
         }
     }
 
-    "ensure all top-level links have matching id field" in {
-      val menu = service.buildMenu()
+     "ensure all top-level links have matching id field" in {
+       val menu = service.buildMenu()
 
-      val expectedIds = Set("users", "teams", "repositories", "deployments", "shuttering", "health", "explore", "docs")
-      val actualIds = menu.topLevelLinks.map(_.id).toSet
+       val expectedIds = Set("users", "teams", "repositories", "deployments", "shuttering", "health", "explore", "docs")
+       val actualIds = menu.topLevelLinks.map(_.id).toSet
 
-      actualIds shouldBe expectedIds
-    }
-  }
+       actualIds shouldBe expectedIds
+     }
+   }
+
+   "NavMenuService.buildMenu with role filtering" should {
+
+     "include all dropdowns except those requiring roles when no role is provided" in {
+       val menu = service.buildMenu(UserContext.empty)
+
+       // Only the 'users' dropdown requires a role (CanManageUsers), so it's filtered out
+       // Expected: 5 dropdowns (all except users out of 6 total)
+       menu.dropdowns.length shouldBe 5
+       menu.dropdowns.find(_.id == "users") shouldBe empty
+     }
+
+     "include users dropdown when user has CanManageUsers role" in {
+       val userContext = UserContext(Set(Role.CanManageUsers))
+       val menu = service.buildMenu(userContext)
+
+       // With the required role, all 6 dropdowns should be included
+       menu.dropdowns.length shouldBe 6
+       val usersDropdown = menu.dropdowns.find(_.id == "users")
+       usersDropdown should not be empty
+       usersDropdown.value.dropDownRole should contain only Role.CanManageUsers
+     }
+
+     "exclude users dropdown when user does not have CanManageUsers role" in {
+       val userContext = UserContext(Set(Role.CanCreate))
+       val menu = service.buildMenu(userContext)
+
+
+       // User has CanCreate but not CanManageUsers, so users dropdown is filtered out
+       menu.dropdowns.length shouldBe 5
+       menu.dropdowns.find(_.id == "users") shouldBe empty
+     }
+
+     "include dropdowns with no role requirement regardless of user role" in {
+       val userContext = UserContext(Set(Role.CanCreate))
+       val menu = service.buildMenu(userContext)
+
+       // Deployments dropdown has no role requirement (empty list)
+       val deploymentsDropdown = menu.dropdowns.find(_.id == "deployments")
+       deploymentsDropdown should not be empty
+       deploymentsDropdown.value.dropDownRole shouldBe empty
+     }
+   }
 

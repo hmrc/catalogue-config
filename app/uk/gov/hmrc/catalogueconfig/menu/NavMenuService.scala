@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.catalogueconfig.menu
 
+import uk.gov.hmrc.catalogueconfig.UserContext
+import uk.gov.hmrc.catalogueconfig.model.Role.CanManageUsers
 import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, DropdownSeparator, MenuDropdown, Page, TopMenu}
 
 import javax.inject.Singleton
@@ -103,7 +105,7 @@ class NavMenuService {
   
   import NavMenuService._
 
-  def buildMenu(): BannerMenu = {
+  def buildMenu(userContext: UserContext = UserContext.empty): BannerMenu = {
     BannerMenu(
       brand =
         TopMenu(
@@ -124,7 +126,8 @@ class NavMenuService {
               createUser,
               createServiceUser,
               offboardUsers
-              )
+              ),
+            dropDownRole = List(CanManageUsers)
             ),
 
           MenuDropdown(
@@ -205,7 +208,7 @@ class NavMenuService {
               )
             )
 
-          )
+          ).filter(dropdown => userContext.hasAnyRole(dropdown.dropDownRole))
       )
   }
 

@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.model
+package uk.gov.hmrc.catalogueconfig.search.sources
 
-import play.api.libs.json.{Format, Json}
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
-final case class SearchTerm(
-  linkType        :String,
-  name            :String,
-  href            :String,
-  weight          :Float = 0.5f,
-  hints           :Set[String] = Set.empty,
-  openInNewWindow :Boolean = false
-) {
-  lazy val terms: Set[String] =
-    Set(name, linkType).union(hints).map(_.toLowerCase.replaceAll("[ \\-_]", ""))
+private[sources] object SearchUrlEncoding {
+  def encodeQuery(value: String): String =
+    URLEncoder.encode(value, StandardCharsets.UTF_8.name())
+
+  def encodePathSegment(value: String): String =
+    encodeQuery(value).replace("+", "%20")
 }
 
-object SearchTerm {
-  implicit val format: Format[SearchTerm] = Json.format[SearchTerm]
-}

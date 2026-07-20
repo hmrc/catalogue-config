@@ -16,16 +16,25 @@
 
 package uk.gov.hmrc.catalogueconfig
 
-import play.api.{Configuration, Environment}
-import play.api.inject.{Binding, Module => AppModule}
+import com.google.inject.AbstractModule
+import com.google.inject.multibindings.Multibinder
+import search.sources.{CatalogueDigitalServiceSearchSource, CataloguePrCommenterSearchSource, CatalogueRepositorySearchSource, CatalogueServiceConfigSearchSource, CatalogueTeamSearchSource, CatalogueUserSearchSource, OperationalMetricsSearchSource, StaticPageSearchSource}
+import search.{SearchScheduler, SearchSource}
 
 import java.time.Clock
 
-class Module extends AppModule:
+class Module extends AbstractModule:
 
-  override def bindings(
-    environment  : Environment,
-    configuration: Configuration
-  ): Seq[Binding[_]] =
-    bind[Clock].toInstance(Clock.systemDefaultZone) :: // inject if current time needs to be controlled in unit tests
-    Nil
+  override def configure(): Unit =
+    bind(classOf[SearchScheduler]).asEagerSingleton()
+    bind(classOf[Clock]).toInstance(Clock.systemDefaultZone) // inject if current time needs to be controlled in unit tests
+
+    val sources = Multibinder.newSetBinder(binder(), classOf[SearchSource])
+    sources.addBinding().to(classOf[StaticPageSearchSource])
+    sources.addBinding().to(classOf[OperationalMetricsSearchSource])
+    sources.addBinding().to(classOf[CatalogueTeamSearchSource])
+    sources.addBinding().to(classOf[CatalogueDigitalServiceSearchSource])
+    sources.addBinding().to(classOf[CatalogueRepositorySearchSource])
+    sources.addBinding().to(classOf[CatalogueServiceConfigSearchSource])
+    sources.addBinding().to(classOf[CatalogueUserSearchSource])
+    sources.addBinding().to(classOf[CataloguePrCommenterSearchSource])

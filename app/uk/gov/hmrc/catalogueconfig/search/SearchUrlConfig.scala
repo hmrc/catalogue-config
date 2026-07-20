@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.catalogueconfig.model
+package uk.gov.hmrc.catalogueconfig.search
 
-import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-final case class SearchTerm(
-  linkType        :String,
-  name            :String,
-  href            :String,
-  weight          :Float = 0.5f,
-  hints           :Set[String] = Set.empty,
-  openInNewWindow :Boolean = false
-) {
-  lazy val terms: Set[String] =
-    Set(name, linkType).union(hints).map(_.toLowerCase.replaceAll("[ \\-_]", ""))
+import javax.inject.{Inject, Singleton}
+
+@Singleton
+class SearchUrlConfig @Inject()(servicesConfig: ServicesConfig) {
+  val catalogueFrontendBaseUrl: String =
+    servicesConfig.baseUrl("catalogue-frontend").stripSuffix("/")
+
+  val operationalMetricsFrontendBaseUrl: String =
+    servicesConfig.baseUrl("operational-metrics-frontend").stripSuffix("/")
 }
 
-object SearchTerm {
-  implicit val format: Format[SearchTerm] = Json.format[SearchTerm]
-}
