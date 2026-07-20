@@ -8,7 +8,8 @@ object AppDependencies {
 
   val compile = Seq(
     guice,
-    "uk.gov.hmrc" %% "bootstrap-backend-play-30" % bootstrapVersion
+    "uk.gov.hmrc" %% "bootstrap-backend-play-30" % bootstrapVersion,
+    "uk.gov.hmrc" %% "internal-auth-client-play-30" % "4.4.0"
   )
 
   val test = Seq(

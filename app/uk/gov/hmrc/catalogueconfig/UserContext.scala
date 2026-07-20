@@ -16,26 +16,14 @@
 
 package uk.gov.hmrc.catalogueconfig
 
-import uk.gov.hmrc.catalogueconfig.model.Role
-
-trait UserContext:
-  def roles: Set[Role]
-  def hasRole(role: Role): Boolean = roles.contains(role)
-  def hasAnyRole(requiredRoles: Seq[Role]): Boolean =
-    requiredRoles match
-      case Nil => true
-      case roles => roles.exists(hasRole)
+final case class UserContext(
+  canCreateUser: Boolean,
+  canManageUser: Boolean
+)
 
 object UserContext:
-  val empty: UserContext = SimpleUserContext(Set.empty)
-
-  def apply(roles: Set[Role]): UserContext =
-    SimpleUserContext(roles)
-
-  def fromRoleIdentifier(roleIdentifier: String): UserContext =
-    Role.byIdentifier(roleIdentifier)
-      .map(role => SimpleUserContext(Set(role)))
-      .getOrElse(empty)
-
-  private case class SimpleUserContext(roles: Set[Role]) extends UserContext
-
+  val empty: UserContext =
+    UserContext(
+      canCreateUser = false,
+      canManageUser = false
+    )

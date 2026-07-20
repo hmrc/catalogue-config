@@ -24,24 +24,24 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{StringContextOps, HttpReads, HeaderCarrier}
+import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
 import uk.gov.hmrc.internalauth.client.{BackendAuthComponents, Predicate, Retrieval}
-import play.api.test.Helpers.stubControllerComponents
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class HealthEndpointIntegrationSpec
+class MenuEndpointAuthIntegrationSpec
   extends AnyWordSpec
-     with Matchers
-     with ScalaFutures
-     with IntegrationPatience
-     with GuiceOneServerPerSuite:
+    with Matchers
+    with ScalaFutures
+    with IntegrationPatience
+    with GuiceOneServerPerSuite:
 
   private val httpClient = app.injector.instanceOf[HttpClientV2]
-  private val baseUrl  = s"http://localhost:$port"
+  private val baseUrl = s"http://localhost:$port"
 
   override def fakeApplication(): Application =
     given ControllerComponents = stubControllerComponents()
@@ -49,7 +49,7 @@ class HealthEndpointIntegrationSpec
     val authStub: BackendAuthComponents =
       BackendAuthComponentsStub(new StubBehaviour:
         override def stubAuth[R](predicate: Option[Predicate], retrieval: Retrieval[R]): Future[R] =
-          Future.failed(new RuntimeException("Auth stub should not be called for health endpoint test"))
+          Future.failed(new RuntimeException("Auth stub should not be called for missing credentials test"))
       )
 
     GuiceApplicationBuilder()
@@ -58,12 +58,12 @@ class HealthEndpointIntegrationSpec
       )
       .build()
 
-  "service health endpoint" should:
-    "respond with 200 status" in:
+  "menu endpoint authentication" should:
+    "return HTTP 401 when authorization credentials are missing" in:
       val response =
         httpClient
-          .get(url"$baseUrl/ping/ping")(HeaderCarrier())
+          .get(url"$baseUrl/catalogue-config/menu-bar/menu")(HeaderCarrier())
           .execute()
           .futureValue
 
-      response.status shouldBe 200
+      response.status shouldBe 401
