@@ -121,7 +121,7 @@ class NavMenuServiceSpec
 
    "NavMenuService.buildMenu users permissions" should {
 
-     "AC-CFG-001: include top-level users link and no users dropdown when user has neither action" in {
+     "include top-level users link and no users dropdown when user has neither action" in {
        val menu = service.buildMenu(UserContext.empty)
 
        val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
@@ -131,7 +131,7 @@ class NavMenuServiceSpec
        menu.dropdowns.find(_.id == "users") shouldBe empty
      }
 
-     "AC-CFG-002: include create-only users dropdown entries when user has CREATE_USER only" in {
+     "include create-only users dropdown entries when user has CREATE_USER only" in {
        val menu = service.buildMenu(UserContext(canCreateUser = true, canManageUser = false))
 
        val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
@@ -147,7 +147,7 @@ class NavMenuServiceSpec
        )
      }
 
-     "AC-CFG-003: include manage-only users dropdown entries when user has MANAGE_USER only" in {
+     "include manage-only users dropdown entries when user has MANAGE_USER only" in {
        val menu = service.buildMenu(UserContext(canCreateUser = false, canManageUser = true))
 
        val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
@@ -160,7 +160,7 @@ class NavMenuServiceSpec
        usersDropdowns.head.items.flatMap(_.asPage.map(_.id)) shouldBe Seq("offboard-users")
      }
 
-     "AC-CFG-004: include create and manage dropdown entries when user has both actions" in {
+     "include create and manage dropdown entries when user has both actions" in {
        val menu = service.buildMenu(UserContext(canCreateUser = true, canManageUser = true))
 
        val topLevelUsersLinks = menu.topLevelLinks.collect { case link if link.id == "users" => link }
@@ -177,7 +177,7 @@ class NavMenuServiceSpec
        )
      }
 
-     "AC-CFG-005: keep exact users href mappings" in {
+     "keep exact users href mappings" in {
        val menu = service.buildMenu(UserContext(canCreateUser = true, canManageUser = true))
        val usersDropdown = menu.dropdowns.find(_.id == "users").value
        val hrefByPageId = usersDropdown.items.flatMap(_.asPage).map(page => page.id -> page.href).toMap
@@ -189,7 +189,7 @@ class NavMenuServiceSpec
        usersDropdown.href shouldBe Some("/users")
      }
 
-     "AC-CFG-006 and AC-CFG-007: never emit an empty or duplicate users dropdown" in {
+     "never emit an empty or duplicate users dropdown" in {
        val permissionCombinations = Seq(
          UserContext(canCreateUser = false, canManageUser = false),
          UserContext(canCreateUser = true, canManageUser = false),
