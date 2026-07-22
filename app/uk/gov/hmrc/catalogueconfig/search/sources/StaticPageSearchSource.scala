@@ -27,10 +27,10 @@ import scala.concurrent.Future
 class StaticPageSearchSource @Inject()(config: Configuration) extends SearchSource {
 
   private val catalogueBaseUrl: String =
-    config.get[String]("frontend-base-urls.catalogue-frontend").stripSuffix("/")
+    config.getOptional[String]("frontend-base-urls.catalogue-frontend").getOrElse("").stripSuffix("/")
 
   private val operationalMetricsBaseUrl: String =
-    config.get[String]("frontend-base-urls.operational-metrics-frontend").stripSuffix("/")
+    config.getOptional[String]("frontend-base-urls.operational-metrics-frontend").getOrElse("").stripSuffix("/")
 
   private val handbookUrl: String =
     config.getOptional[String]("docs.handbookUrl")
