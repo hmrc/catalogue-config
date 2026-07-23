@@ -26,12 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueUserSearchSource @Inject()(
-    connector: UserManagementConnector,
-    servicesConfig: ServicesConfig
+    connector: UserManagementConnector
 )(implicit ec: ExecutionContext) extends SearchSource {
-
-  private val catalogueFrontendBaseUrl: String =
-    servicesConfig.baseUrl("catalogue-frontend").stripSuffix("/")
 
   private val usersPath: String =
     "/users/"
@@ -42,7 +38,7 @@ class CatalogueUserSearchSource @Inject()(
         SearchTerm(
           linkType = "users",
           name     = user.username,
-          href     = s"$catalogueFrontendBaseUrl$usersPath${SearchUrlEncoding.encodePathSegment(user.username)}",
+          href     = s"$usersPath${SearchUrlEncoding.encodePathSegment(user.username)}",
           weight   = 0.5f
         )
       }

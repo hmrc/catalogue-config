@@ -26,12 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CataloguePrCommenterSearchSource @Inject()(
-    connector: PrCommenterConnector,
-    servicesConfig: ServicesConfig
+    connector: PrCommenterConnector
 )(implicit ec: ExecutionContext) extends SearchSource {
-
-  private val catalogueFrontendBaseUrl: String =
-    servicesConfig.baseUrl("catalogue-frontend").stripSuffix("/")
 
   private val recommendationsPath: String =
     "/pr-commenter/recommendations?name="
@@ -42,7 +38,7 @@ class CataloguePrCommenterSearchSource @Inject()(
         SearchTerm(
           linkType = "recommendations",
           name     = report.name,
-          href     = s"$catalogueFrontendBaseUrl$recommendationsPath${SearchUrlEncoding.encodeQuery(report.name)}",
+          href     = s"$recommendationsPath${SearchUrlEncoding.encodeQuery(report.name)}",
           weight   = 0.5f
         )
       }

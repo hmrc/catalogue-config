@@ -25,12 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueDigitalServiceSearchSource @Inject()(
-    connector: CatalogueConnector,
-    urlConfig: SearchUrlConfig
+    connector: CatalogueConnector
 )(implicit ec: ExecutionContext) extends SearchSource {
-
-  private val catalogueFrontendBaseUrl: String =
-    urlConfig.catalogueFrontendBaseUrl
 
   private val digitalServicesPath: String =
     "/digital-services/"
@@ -46,13 +42,13 @@ class CatalogueDigitalServiceSearchSource @Inject()(
           SearchTerm(
             linkType = "digital service",
             name     = ds,
-            href     = s"$catalogueFrontendBaseUrl$digitalServicesPath${SearchUrlEncoding.encodePathSegment(ds)}",
+            href     = s"$digitalServicesPath${SearchUrlEncoding.encodePathSegment(ds)}",
             weight   = 0.5f
           ),
           SearchTerm(
             linkType = "deployments (digital service)",
             name     = ds,
-            href     = s"$catalogueFrontendBaseUrl$deploymentsByDigitalServicePath$encodedDigitalService",
+            href     = s"$deploymentsByDigitalServicePath$encodedDigitalService",
             weight   = 0.5f
           )
         )
