@@ -37,12 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 @Singleton
 class CatalogueRepositorySearchSource @Inject()(
-    connector: CatalogueConnector,
-    urlConfig: SearchUrlConfig
+    connector: CatalogueConnector
 )(implicit ec: ExecutionContext) extends SearchSource {
-
-  private val catalogueFrontendBaseUrl: String =
-    urlConfig.catalogueFrontendBaseUrl
 
   private val repositoriesSearchPath: String =
     "/repositories?name="
@@ -76,14 +72,14 @@ class CatalogueRepositorySearchSource @Inject()(
           SearchTerm(
             linkType = repoTypeLinkType(repo.repoType),
             name     = repo.name,
-            href     = s"$catalogueFrontendBaseUrl$repositoriesSearchPath$encodedRepoName",
+            href     = s"$repositoriesSearchPath$encodedRepoName",
             weight   = 0.5f,
             hints    = Set("repository")
           ),
           SearchTerm(
             linkType = "leak",
             name     = repo.name,
-            href     = s"$catalogueFrontendBaseUrl$leaksPath${SearchUrlEncoding.encodePathSegment(repo.name)}",
+            href     = s"$leaksPath${SearchUrlEncoding.encodePathSegment(repo.name)}",
             weight   = 0.5f
           )
         )
@@ -94,22 +90,22 @@ class CatalogueRepositorySearchSource @Inject()(
               SearchTerm(
                 linkType = "deploy",
                 name     = repo.name,
-                href     = s"$catalogueFrontendBaseUrl$deployServicePath$encodedRepoName"
+                href     = s"$deployServicePath$encodedRepoName"
               ),
               SearchTerm(
                 linkType = "config",
                 name     = repo.name,
-                href     = s"$catalogueFrontendBaseUrl$searchConfigPath$encodedRepoName"
+                href     = s"$searchConfigPath$encodedRepoName"
               ),
               SearchTerm(
                 linkType = "timeline",
                 name     = repo.name,
-                href     = s"$catalogueFrontendBaseUrl$deploymentTimelinePath$encodedRepoName"
+                href     = s"$deploymentTimelinePath$encodedRepoName"
               ),
               SearchTerm(
                 linkType = "commissioning state",
                 name     = repo.name,
-                href     = s"$catalogueFrontendBaseUrl$commissioningStatePath$encodedRepoName"
+                href     = s"$commissioningStatePath$encodedRepoName"
               )
             )
           else Seq.empty

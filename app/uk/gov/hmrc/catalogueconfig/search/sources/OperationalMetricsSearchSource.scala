@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
+import play.api.Configuration
 import uk.gov.hmrc.catalogueconfig.connectors.OperationalMetricsConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import uk.gov.hmrc.catalogueconfig.search.SearchSource
@@ -27,11 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OperationalMetricsSearchSource @Inject()(
     connector: OperationalMetricsConnector,
-    servicesConfig: ServicesConfig
+    config: Configuration
 )(implicit ec: ExecutionContext) extends SearchSource {
 
-  private val operationalMetricsFrontendBaseUrl: String =
-    servicesConfig.baseUrl("operational-metrics-frontend").stripSuffix("/")
+  private val operationalMetricsBaseUrl: String =
+    config.getOptional[String]("frontend-base-urls.operational-metrics-frontend").getOrElse("").stripSuffix("/")
 
   private val serviceQueryPath: String =
     "?service="
@@ -44,7 +45,7 @@ class OperationalMetricsSearchSource @Inject()(
         SearchTerm(
           linkType = "operational metric",
           name = service.serviceName,
-          href = s"$operationalMetricsFrontendBaseUrl$serviceQueryPath$encodedName",
+          href = s"$operationalMetricsBaseUrl$serviceQueryPath$encodedName",
           weight = 0.7f,
           hints = hints,
           openInNewWindow = false

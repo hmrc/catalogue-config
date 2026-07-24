@@ -25,12 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueTeamSearchSource @Inject()(
-    connector: CatalogueConnector,
-    urlConfig: SearchUrlConfig
+    connector: CatalogueConnector
 )(implicit ec: ExecutionContext) extends SearchSource {
-
-  private val catalogueFrontendBaseUrl: String =
-    urlConfig.catalogueFrontendBaseUrl
 
   private val teamsSearchPath: String =
     "/teams?name="
@@ -46,13 +42,13 @@ class CatalogueTeamSearchSource @Inject()(
           SearchTerm(
             linkType = "team",
             name     = team.name,
-            href     = s"$catalogueFrontendBaseUrl$teamsSearchPath$encodedTeamName",
+            href     = s"$teamsSearchPath$encodedTeamName",
             weight   = 0.5f
           ),
           SearchTerm(
             linkType = "deployments by team",
             name     = team.name,
-            href     = s"$catalogueFrontendBaseUrl$deploymentsByTeamSearchPath$encodedTeamName",
+            href     = s"$deploymentsByTeamSearchPath$encodedTeamName",
             weight   = 0.5f
           )
         )

@@ -29,12 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 @Singleton
 class CatalogueServiceConfigSearchSource @Inject()(
-    connector: ServiceConfigsConnector,
-    urlConfig: SearchUrlConfig
+    connector: ServiceConfigsConnector
 )(implicit ec: ExecutionContext) extends SearchSource {
-
-  private val catalogueFrontendBaseUrl: String =
-    urlConfig.catalogueFrontendBaseUrl
+  
 
   private val servicePath: String =
     "/service/"
@@ -45,7 +42,7 @@ class CatalogueServiceConfigSearchSource @Inject()(
         SearchTerm(
           linkType = "Service",
           name     = mapping.serviceName,
-          href     = s"$catalogueFrontendBaseUrl$servicePath${SearchUrlEncoding.encodePathSegment(mapping.serviceName)}",
+          href     = s"$servicePath${SearchUrlEncoding.encodePathSegment(mapping.serviceName)}",
           weight   = 0.5f,
           hints    = Set("repository")
         )
