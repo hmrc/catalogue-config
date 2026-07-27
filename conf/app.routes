@@ -1,5 +1,5 @@
 # microservice specific routes
 
-GET        /menu-bar/menu           uk.gov.hmrc.catalogueconfig.controllers.MenuController.menu()
+GET        /menu           uk.gov.hmrc.catalogueconfig.controllers.MenuController.menu()
 
-GET        /menu-bar/search-index   uk.gov.hmrc.catalogueconfig.controllers.MenuController.search()
+GET        /search-index   uk.gov.hmrc.catalogueconfig.controllers.MenuController.search()

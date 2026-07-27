@@ -62,7 +62,7 @@ class MenuEndpointAuthIntegrationSpec
     "return HTTP 401 when authorization credentials are missing" in:
       val response =
         httpClient
-          .get(url"$baseUrl/catalogue-config/menu-bar/menu")(HeaderCarrier())
+          .get(url"$baseUrl/catalogue-config/menu")(HeaderCarrier())
           .execute()
           .futureValue
 

@@ -85,13 +85,13 @@ class MenuControllerSpec
       )
       .build()
 
-  "GET /catalogue-config/menu-bar/menu" should {
+  "GET /catalogue-config/menu" should {
     "return 200 with top-level users link and no users dropdown when user has neither action" in {
       MenuControllerSpec.AuthStubState.reset(Future.successful(emptyActions))
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       status(result) shouldBe OK
@@ -104,7 +104,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       status(result) shouldBe OK
@@ -117,7 +117,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       status(result) shouldBe OK
@@ -130,7 +130,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       status(result) shouldBe OK
@@ -143,7 +143,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       status(result) shouldBe OK
@@ -166,7 +166,7 @@ class MenuControllerSpec
 
         val result = route(
           app,
-          FakeRequest(GET, s"/catalogue-config/menu-bar/menu?role=$role").withHeaders("Authorization" -> "Bearer test-token")
+          FakeRequest(GET, s"/catalogue-config/menu?role=$role").withHeaders("Authorization" -> "Bearer test-token")
         ).value
 
         status(result) shouldBe OK
@@ -179,7 +179,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu")
+        FakeRequest(GET, "/catalogue-config/menu")
       ).value
 
       val exception = result.failed.futureValue
@@ -194,7 +194,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       val exception = result.failed.futureValue
@@ -209,7 +209,7 @@ class MenuControllerSpec
 
       val result = route(
         app,
-        FakeRequest(GET, "/catalogue-config/menu-bar/menu").withHeaders("Authorization" -> "Bearer test-token")
+        FakeRequest(GET, "/catalogue-config/menu").withHeaders("Authorization" -> "Bearer test-token")
       ).value
 
       val exception = result.failed.futureValue
