@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.catalogueconfig.search.sources
 
-import uk.gov.hmrc.catalogueconfig.connectors.CatalogueConnector
+import uk.gov.hmrc.catalogueconfig.connectors.{CatalogueConnector, UserManagementConnector}
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import uk.gov.hmrc.catalogueconfig.search.{SearchSource, SearchUrlConfig}
 
@@ -25,8 +25,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CatalogueTeamSearchSource @Inject()(
-    connector: CatalogueConnector
-)(implicit ec: ExecutionContext) extends SearchSource {
+    catalogueConnector: CatalogueConnector,
+    umpConnector: UserManagementConnector
+)(implicit ec: ExecutionContext) extends SearchSource:
 
   private val teamsSearchPath: String =
     "/teams?name="
@@ -35,23 +36,23 @@ class CatalogueTeamSearchSource @Inject()(
     "/whats-running-where?teamName="
 
   override def terms(): Future[Seq[SearchTerm]] =
-    connector.allTeams().map { teams =>
-      teams.flatMap { team =>
-        val encodedTeamName = SearchUrlEncoding.encodeQuery(team.name)
-        Seq(
-          SearchTerm(
-            linkType = "team",
-            name     = team.name,
-            href     = s"$teamsSearchPath$encodedTeamName",
-            weight   = 0.5f
-          ),
+    for
+      teamSearchTerms <- catalogueConnector.allTeams().map: teams =>
+        teams.map: team =>
+          val encodedTeamName = SearchUrlEncoding.encodeQuery(team.name)
           SearchTerm(
             linkType = "deployments by team",
             name     = team.name,
             href     = s"$deploymentsByTeamSearchPath$encodedTeamName",
             weight   = 0.5f
           )
-        )
-      }
-    }
-}
+      umpSearchTerms <- umpConnector.getTeams().map: teams =>
+        teams.map: team =>
+          val encodedTeamName = SearchUrlEncoding.encodeQuery(team.teamName)
+          SearchTerm(
+            linkType = "team",
+            name     = team.teamName,
+            href     = s"$teamsSearchPath$encodedTeamName",
+            weight   = 0.5f
+          )
+    yield teamSearchTerms ++ umpSearchTerms
