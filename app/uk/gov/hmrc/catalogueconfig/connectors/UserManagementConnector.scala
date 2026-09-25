@@ -24,30 +24,42 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.catalogueconfig.model.UmpTeam
 
 @Singleton
 class UserManagementConnector @Inject()(
   ws: WSClient,
   servicesConfig: ServicesConfig
-)(implicit ec: ExecutionContext) extends Logging {
+)(implicit ec: ExecutionContext) extends Logging:
 
   private val baseUrl = servicesConfig.baseUrl("user-management")
   
-  def getActiveUsers(): Future[Seq[CatalogueUser]] = {
+  def getActiveUsers(): Future[Seq[CatalogueUser]] =
     val url = s"$baseUrl/user-management/active-users"
     ws.url(url)
       .get()
-      .map { response =>
+      .map: response =>
         if (response.status == 200)
           Json.parse(response.body).as[Seq[CatalogueUser]]
-        else {
+        else
           logger.warn(s"UserManagementConnector.getActiveUsers: unexpected status ${response.status} from $url")
           Seq.empty
-        }
-      }
-      .recover { case ex =>
-        logger.error(s"UserManagementConnector.getActiveUsers: failed to call $url", ex)
-        Seq.empty
-      }
-  }
-}
+      .recover:
+        case ex =>
+          logger.error(s"UserManagementConnector.getActiveUsers: failed to call $url", ex)
+          Seq.empty
+
+  def getTeams(): Future[Seq[UmpTeam]] =
+    val url = s"$baseUrl/user-management/teams?includeNonHuman=true"
+    ws.url(url)
+      .get()
+      .map: response =>
+        if (response.status == 200)
+          Json.parse(response.body).as[Seq[UmpTeam]]
+        else
+          logger.warn(s"UserManagementConnector.getTeams: unexpected status ${response.status} from $url")
+          Seq.empty
+      .recover:
+        case ex =>
+          logger.error(s"UserManagementConnector.getTeams: failed to call $url", ex)
+          Seq.empty
