@@ -18,7 +18,7 @@ package uk.gov.hmrc.catalogueconfig.search.sources
 
 import uk.gov.hmrc.catalogueconfig.connectors.{CatalogueConnector, UserManagementConnector}
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
-import uk.gov.hmrc.catalogueconfig.search.{SearchSource, SearchUrlConfig}
+import uk.gov.hmrc.catalogueconfig.search.SearchSource
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
