@@ -19,8 +19,6 @@ package uk.gov.hmrc.catalogueconfig.model
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
-import uk.gov.hmrc.catalogueconfig.menu.NavMenuService
-import uk.gov.hmrc.catalogueconfig.menu.NavMenuService.{createServiceUser, createUser, offboardUsers}
 
 class MenuBarModelSpec extends
   AnyWordSpec

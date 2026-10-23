@@ -17,7 +17,7 @@
 package uk.gov.hmrc.catalogueconfig.menu
 
 import uk.gov.hmrc.catalogueconfig.UserContext
-import uk.gov.hmrc.catalogueconfig.model.{BannerMenu, DropdownSeparator, MenuDropdown, Page, TopMenu}
+import uk.gov.hmrc.catalogueconfig.model.{AccountMenu, BannerMenu, DropdownSeparator, MenuDropdown, Page, TopMenu}
 
 import javax.inject.Singleton
 
@@ -117,6 +117,11 @@ class NavMenuService {
           ),
 
       topLevelLinks = NavMenuService.topLevelMenus,
+      accountMenu = Some(AccountMenu(
+        profile = Page("Profile", "profile", "/users/{username}"),
+        signIn = Page("Sign in", "sign-in", "/sign-in"),
+        signOut = Page("Sign out", "sign-out", "/sign-out")
+      )),
 
       dropdowns =
         usersDropdowns ++ Seq(

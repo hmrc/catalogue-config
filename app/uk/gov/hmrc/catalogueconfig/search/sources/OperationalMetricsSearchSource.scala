@@ -20,7 +20,6 @@ import play.api.Configuration
 import uk.gov.hmrc.catalogueconfig.connectors.OperationalMetricsConnector
 import uk.gov.hmrc.catalogueconfig.model.SearchTerm
 import uk.gov.hmrc.catalogueconfig.search.SearchSource
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
