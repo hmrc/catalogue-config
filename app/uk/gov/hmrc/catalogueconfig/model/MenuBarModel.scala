@@ -51,12 +51,13 @@ case object DropdownSeparator extends DropdownItem:
 final case class BannerMenu(
   brand: MenuLink,
   topLevelLinks: Seq[MenuLink],
-  dropdowns: Seq[MenuDropdown]
+  dropdowns: Seq[MenuDropdown],
+  accountMenu: Option[AccountMenu] = None
 )
 
 object BannerMenu:
   given format: Format[BannerMenu] =
-    Json.format[BannerMenu]
+    Json.using[Json.WithDefaultValues].format[BannerMenu]
 
   val empty: BannerMenu =
     BannerMenu(
@@ -64,6 +65,15 @@ object BannerMenu:
       topLevelLinks = Seq.empty,
       dropdowns = Seq.empty
       )
+
+final case class AccountMenu(
+  profile: Page,
+  signIn : Page,
+  signOut: Page
+)
+
+object AccountMenu:
+  given format: Format[AccountMenu] = Json.format[AccountMenu]
 
 final case class MenuDropdown(
   id           :String,
